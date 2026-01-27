@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debarshi Chakraborty | AI & Distributed Systems</title>
+    <title>Debarshi Chakraborty | Distributed Intelligence</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -190,6 +190,22 @@
             background: radial-gradient(circle at top right, rgba(255, 183, 3, 0.05), #050505);
         }
 
+        /* --- COURSEWORK GRID --- */
+        .course-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;
+        }
+        .course-card {
+            background: var(--bg-card); border: 1px solid var(--glass-border);
+            padding: 1.5rem; border-radius: 8px; text-align: center;
+            transition: 0.3s; position: relative; overflow: hidden;
+        }
+        .course-card:hover { border-color: var(--accent-orange); transform: translateY(-5px); }
+        .course-num { 
+            font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.8rem; 
+            margin-bottom: 0.5rem; opacity: 0.6; display: block;
+        }
+        .course-title { font-size: 1rem; color: #fff; font-weight: 500; }
+
         /* --- SKILLS --- */
         .skill-section { margin-bottom: 2.5rem; }
         .skill-title { 
@@ -238,8 +254,8 @@
                 <div class="hero-tags">&lt; SYSTEM.ONLINE /&gt;</div>
                 <h1 class="glitch">DEBARSHI<br>CHAKRABORTY</h1>
                 <p class="hero-subtitle">
-                    AI Researcher & Distributed Systems Engineer.<br>
-                    Developing next-generation architectures powered by <span style="color: var(--accent-gold)">Agentic AI</span>, <span style="color: var(--accent-gold)">Deep Learning</span>, and <span style="color: var(--accent-gold)">HPC</span>.
+                    Distributed Systems Engineer & Generative AI Architect.<br>
+                    Bridging the gap between <strong>theoretical mathematics</strong> and <strong>production-grade intelligence</strong>—specializing in Deep Reinforcement Learning, NLP, and High-Performance Computing.
                 </p>
                 <div class="social-bar">
                     <a href="mailto:debarshi2933@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
@@ -269,6 +285,69 @@
                         <p>CGPA: 7.63</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section id="coursework">
+            <h2><i class="fas fa-book-open"></i> Academic Foundation</h2>
+            <div class="course-grid">
+                
+                <div class="course-card">
+                    <span class="course-num">01. MATH</span>
+                    <div class="course-title">Linear Algebra</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">02. MATH</span>
+                    <div class="course-title">Multivariate Calculus</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">03. MATH</span>
+                    <div class="course-title">Probability & Stochastic Processes</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">04. MATH</span>
+                    <div class="course-title">Multivariate Statistics</div>
+                </div>
+
+                <div class="course-card">
+                    <span class="course-num">05. CORE</span>
+                    <div class="course-title">Data Structures & Algorithms</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">06. CORE</span>
+                    <div class="course-title">DBMS & SQL</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">07. CORE</span>
+                    <div class="course-title">Java & Hadoop Ecosystem</div>
+                </div>
+
+                <div class="course-card">
+                    <span class="course-num">08. AI</span>
+                    <div class="course-title">Machine Learning</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">09. AI</span>
+                    <div class="course-title">Deep Learning & NLP</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">10. AI</span>
+                    <div class="course-title">Time Series Analysis</div>
+                </div>
+                
+                <div class="course-card">
+                    <span class="course-num">11. ADV</span>
+                    <div class="course-title">Graph DBs & Distributed Computing</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">12. ADV</span>
+                    <div class="course-title">Deep Reinforcement Learning</div>
+                </div>
+                <div class="course-card">
+                    <span class="course-num">13. ADV</span>
+                    <div class="course-title">Deep Learning for Cyber Security</div>
+                </div>
+
             </div>
         </section>
 
@@ -319,7 +398,7 @@
                         </div>
                         <div class="card-desc">
                             <p>
-                                An end-to-end institutional settlement system. While leveraging blockchain for finality, the core innovation lies in the <strong>Agentic AI</strong> architecture for semantic trade validation.
+                                An end-to-end institutional settlement system. While leveraging DLT for finality, the core innovation lies in the <strong>Agentic AI</strong> architecture for semantic trade validation.
                             </p>
                             <ul style="margin-top: 10px; margin-left: 20px; list-style-type: square;">
                                 <li><strong>Agentic AI:</strong> Deployed State-Based LangGraph agents (Llama 3.2) for pre-trade compliance and liquidity checks.</li>
