@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debarshi Chakraborty | Distributed Systems & AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- RESET & VARS --- */
+        :root {
+            --bg-void: #030305;
+            --bg-card: rgba(20, 20, 25, 0.6);
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --accent-cyan: #00f0ff;
+            --accent-purple: #bd00ff;
+            --accent-green: #00ff9d;
+            --text-main: #ffffff;
+            --text-muted: #8b9bb4;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --glow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; } /* Hide default cursor */
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        #cursor {
+            position: fixed;
+            top: 0; left: 0;
+            width: 20px; height: 20px;
+            border: 1px solid var(--accent-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background 0.3s;
+            mix-blend-mode: difference;
+        }
+        #cursor-dot {
+            position: fixed;
+            top: 0; left: 0;
+            width: 4px; height: 4px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+        }
+
+        /* --- BACKGROUND MESH --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        h1, h2, h3 { font-weight: 700; letter-spacing: -0.02em; }
+        h1 { font-size: 4rem; background: linear-gradient(to right, #fff, #8b9bb4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        h2 { font-size: 2.5rem; margin-bottom: 2rem; position: relative; display: inline-block; }
+        h2::after {
+            content: ''; position: absolute; left: 0; bottom: -10px;
+            width: 60px; height: 4px; background: var(--accent-cyan);
+            box-shadow: var(--glow);
+        }
+        .highlight { color: var(--accent-cyan); }
+        .tagline { color: var(--accent-green); font-family: 'Courier New', monospace; font-size: 1.1rem; margin-top: 1rem; }
+
+        /* --- LAYOUT --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+        section { padding: 8rem 0; opacity: 0; transform: translateY(30px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+        section.visible { opacity: 1; transform: translateY(0); }
+
+        /* --- HERO --- */
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: flex-start; }
+        .hero-content { max-width: 800px; z-index: 2; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            margin-top: 2rem; padding: 12px 30px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .btn:hover { background: var(--accent-cyan); color: var(--bg-void); box-shadow: 0 0 30px rgba(0,240,255,0.4); }
+
+        /* --- GLASS CARDS --- */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            padding: 2.5rem;
+            border-radius: 16px;
+            transition: transform 0.4s, border-color 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover { transform: translateY(-10px); border-color: var(--accent-cyan); }
+        .card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            opacity: 0; transition: opacity 0.4s;
+        }
+        .card:hover::before { opacity: 1; }
+
+        /* --- PROJECTS GRID --- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+        
+        .project-meta { display: flex; flex-wrap: wrap; gap: 8px; margin: 1rem 0; }
+        .pill { 
+            font-size: 0.75rem; padding: 4px 12px; border-radius: 100px; 
+            border: 1px solid var(--border-glass); color: var(--text-muted);
+            background: rgba(255,255,255,0.02);
+        }
+        .card:hover .pill { border-color: rgba(0, 240, 255, 0.3); color: var(--text-main); }
+
+        /* --- SKILLS --- */
+        .skill-group h3 { color: var(--accent-purple); margin-bottom: 1rem; }
+        .skill-grid { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+        .skill-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 16px; background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px; transition: 0.3s;
+        }
+        .skill-item:hover { background: rgba(189, 0, 255, 0.1); border-color: var(--accent-purple); }
+
+        /* --- CONTACT --- */
+        .social-links { display: flex; gap: 2rem; justify-content: center; margin-top: 3rem; }
+        .social-icon { 
+            font-size: 2rem; color: var(--text-muted); transition: 0.3s; 
+        }
+        .social-icon:hover { color: var(--accent-cyan); transform: scale(1.1); text-shadow: var(--glow); }
+
+        /* --- PROGRESS BAR --- */
+        #progress { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); width: 0%; z-index: 1000; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .hero { padding-top: 60px; height: auto; min-height: 100vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+    <div id="cursor-dot"></div>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <div id="progress"></div>
+
+    <div class="container">
+        
+        <section class="hero visible">
+            <div class="hero-content">
+                <p style="color: var(--accent-cyan); letter-spacing: 2px; margin-bottom: 10px;">HELLO, I AM</p>
+                <h1>Debarshi Chakraborty</h1>
+                <p class="tagline">>> Initializing Distributed Intelligence...</p>
+                <p style="color: var(--text-muted); margin-top: 1.5rem; max-width: 600px; font-size: 1.1rem;">
+                    Building scalable, intelligent systems at the intersection of 
+                    <span style="color: #fff">Generative AI</span>, 
+                    <span style="color: #fff">Distributed Computing</span>, and 
+                    <span style="color: #fff">FinTech</span>.
+                </p>
+                <a href="#projects" class="btn">VIEW ARSENAL <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h2>Featured Projects</h2>
+            <div class="grid">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                        <h3 style="color: var(--accent-cyan)">T+0 Trade Settlement</h3>
+                        <i class="fas fa-link" style="color: var(--text-muted)"></i>
+                    </div>
+                    <p class="tagline" style="font-size: 0.9rem; margin-bottom: 1rem;">Blockchain + Agentic AI</p>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">
+                        Designed a permissioned blockchain using Hyperledger Besu for atomic DvP settlement. Integrated Agentic AI for real-time validation, achieving a 91.7% reduction in counterparty risk.
+                    </p>
+                    <div class="project-meta">
+                        <span class="pill">Hyperledger Besu</span>
+                        <span class="pill">Agentic AI</span>
+                        <span class="pill">IEEE WCONF 2025</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                        <h3 style="color: var(--accent-cyan)">Distributed LLM Inference</h3>
+                        <i class="fas fa-code-branch" style="color: var(--text-muted)"></i>
+                    </div>
+                    <p class="tagline" style="font-size: 0.9rem; margin-bottom: 1rem;">HPC & Parallel Computing</p>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">
+                        Built a distributed inference cluster for DeepSeek R1 & LLaMA 3.2B. Achieved 2–4× throughput improvement using tensor and data parallelism strategies in C++.
+                    </p>
+                    <div class="project-meta">
+                        <span class="pill">C++</span>
+                        <span class="pill">CUDA</span>
+                        <span class="pill">Parallelism</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                        <h3 style="color: var(--accent-cyan)">Mood-Based Recommender</h3>
+                        <i class="fas fa-music" style="color: var(--text-muted)"></i>
+                    </div>
+                    <p class="tagline" style="font-size: 0.9rem; margin-bottom: 1rem;">Machine Learning</p>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">
+                        Spotify mood detection classifier with 92% accuracy using SMOTE and ensemble methods. Implemented a cosine-similarity recommendation engine.
+                    </p>
+                    <div class="project-meta">
+                        <span class="pill">Scikit-Learn</span>
+                        <span class="pill">Python</span>
+                        <span class="pill">Pandas</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="research">
+            <h2>Research & Experience</h2>
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3 style="color: var(--accent-green)">Summer Research Intern @ IIT Guwahati</h3>
+                <p style="font-family: monospace; color: var(--text-muted); margin-bottom: 1rem;">2025 | Algorithms & Complexity</p>
+                <ul style="color: var(--text-muted); margin-left: 1.2rem; list-style-type: square;">
+                    <li>Analyzed the Popular Matching Problem in subcubic/bounded-degree graphs.</li>
+                    <li>Designed greedy-based algorithms and implemented prototypes in Python.</li>
+                    <li>Deep dive into graph theory and complexity analysis.</li>
+                </ul>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>🏆 Achievements</h3>
+                    <ul style="color: var(--text-muted); margin-top: 1rem; list-style: none;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-trophy" style="color: #FFD700; margin-right: 10px;"></i> Research Paper Accepted at IEEE WCONF 2025</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-medal" style="color: #C0C0C0; margin-right: 10px;"></i> Qualified IIT JAM 2024 (Maths)</li>
+                        <li><i class="fas fa-certificate" style="color: #cd7f32; margin-right: 10px;"></i> NPTEL Certification in Optimization</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>📚 Core Coursework</h3>
+                    <div class="project-meta">
+                        <span class="pill">Deep Learning</span>
+                        <span class="pill">NLP</span>
+                        <span class="pill">Distributed Systems</span>
+                        <span class="pill">Graph DBs</span>
+                        <span class="pill">Stochastic Processes</span>
+                        <span class="pill">Finance</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills">
+            <h2>Technical Arsenal</h2>
+            
+            <div class="skill-group">
+                <h3>Languages & Core</h3>
+                <div class="skill-grid">
+                    <div class="skill-item"><i class="fab fa-python"></i> Python</div>
+                    <div class="skill-item"><i class="fab fa-java"></i> Java</div>
+                    <div class="skill-item"><i class="fas fa-code"></i> C++</div>
+                    <div class="skill-item">R</div>
+                </div>
+            </div>
+
+            <div class="skill-group">
+                <h3>AI & Machine Learning</h3>
+                <div class="skill-grid">
+                    <div class="skill-item">PyTorch</div>
+                    <div class="skill-item">LangChain</div>
+                    <div class="skill-item">Scikit-Learn</div>
+                    <div class="skill-item">OpenCV</div>
+                    <div class="skill-item">LangGraph</div>
+                </div>
+            </div>
+
+            <div class="skill-group">
+                <h3>Distributed Systems</h3>
+                <div class="skill-grid">
+                    <div class="skill-item">Hyperledger Besu</div>
+                    <div class="skill-item"><i class="fab fa-docker"></i> Docker</div>
+                    <div class="skill-item">Neo4j</div>
+                    <div class="skill-item"><i class="fab fa-linux"></i> Linux</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" style="text-align: center; padding-bottom: 4rem;">
+            <h2 style="font-size: 3rem;">Let's Collaborate</h2>
+            <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto;">
+                Always excited to discuss cutting-edge AI, distributed architectures, and financial technology.
+            </p>
+            <div class="social-links">
+                <a href="mailto:debarshi2933@gmail.com" class="social-icon"><i class="fas fa-envelope"></i></a>
+                <a href="https://linkedin.com/in/debarshi29" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/debarshi29" class="social-icon"><i class="fab fa-github"></i></a>
+            </div>
+            <footer style="margin-top: 4rem; color: var(--border-glass); font-size: 0.8rem;">
+                &copy; 2026 Debarshi Chakraborty. System Online.
+            </footer>
+        </section>
+    </div>
+
+    <script>
+        // --- CUSTOM CURSOR ---
+        const cursor = document.getElementById('cursor');
+        const dot = document.getElementById('cursor-dot');
+        
+        document.addEventListener('mousemove', (e) => {
+            dot.style.left = e.clientX + 'px';
+            dot.style.top = e.clientY + 'px';
+            
+            // Slight delay for the outer circle for "magnetic" feel
+            setTimeout(() => {
+                cursor.style.left = e.clientX + 'px';
+                cursor.style.top = e.clientY + 'px';
+            }, 50);
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.style.transform = "translate(-50%, -50%) scale(0.8)";
+            cursor.style.background = "rgba(0, 240, 255, 0.1)";
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.style.transform = "translate(-50%, -50%) scale(1)";
+            cursor.style.background = "transparent";
+        });
+
+        // Hover effect on clickable elements
+        const clickables = document.querySelectorAll('a, .card');
+        clickables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '50px';
+                cursor.style.height = '50px';
+                cursor.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
+                cursor.style.borderColor = "transparent";
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '20px';
+                cursor.style.height = '20px';
+                cursor.style.backgroundColor = "transparent";
+                cursor.style.borderColor = "#00f0ff";
+            });
+        });
+
+        // --- SCROLL OBSERVER ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+
+        // --- PROGRESS BAR ---
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const percent = (scrollTop / scrollHeight) * 100;
+            document.getElementById('progress').style.width = percent + '%';
+        });
+
+        // --- PARTICLE BACKGROUND (Simple Canvas) ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(0, 240, 255, 0.3)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for(let i=0; i<60; i++) particles.push(new Particle());
+        }
+        initParticles();
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
