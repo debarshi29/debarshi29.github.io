@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debarshi Chakraborty | Distributed Intelligence</title>
+    <title>Debarshi Chakraborty | AI & Distributed Systems</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +21,7 @@
             --text-main: #ffffff;
             --text-muted: #9e9e9e;
             --glass: rgba(20, 20, 20, 0.6);
-            --glass-border: rgba(255, 215, 0, 0.15); /* Subtle Gold Border */
+            --glass-border: rgba(255, 215, 0, 0.15);
             --font-head: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
@@ -50,7 +50,6 @@
             z-index: -1; opacity: 0.3;
         }
         
-        /* Vignette for depth */
         .vignette {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, transparent 0%, var(--bg-void) 90%);
@@ -73,7 +72,7 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
         
         section { 
-            padding: 6rem 0; opacity: 0; transform: translateY(20px); 
+            padding: 5rem 0; opacity: 0; transform: translateY(20px); 
             transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
         }
         section.visible { opacity: 1; transform: translateY(0); }
@@ -103,7 +102,8 @@
         }
         
         .hero-subtitle {
-            font-size: 1.2rem; color: var(--text-muted); max-width: 700px; margin: 1.5rem auto;
+            font-size: 1.3rem; color: var(--text-muted); max-width: 750px; margin: 1.5rem auto;
+            line-height: 1.5;
         }
         
         .hero-tags {
@@ -119,9 +119,10 @@
             100% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
         }
 
-        /* --- EXPERIENCE TIMELINE --- */
+        /* --- TIMELINE (EXPERIENCE & EDUCATION) --- */
         .timeline { position: relative; padding-left: 2rem; border-left: 1px solid var(--glass-border); }
         .timeline-item { position: relative; margin-bottom: 3rem; }
+        .timeline-item:last-child { margin-bottom: 0; }
         .timeline-item::before {
             content: ''; position: absolute; left: -2.35rem; top: 5px;
             width: 10px; height: 10px; background: var(--bg-void);
@@ -133,7 +134,8 @@
             margin-bottom: 0.5rem; letter-spacing: 1px;
         }
         .timeline-content h3 { font-size: 1.4rem; margin-bottom: 0.2rem; color: #fff; }
-        .timeline-content h4 { color: var(--accent-orange); font-weight: 500; margin-bottom: 1rem; font-size: 1rem; }
+        .timeline-content h4 { color: var(--accent-orange); font-weight: 500; margin-bottom: 0.5rem; font-size: 1rem; }
+        .timeline-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem; }
         .timeline-content ul { list-style: none; color: var(--text-muted); font-size: 0.95rem; }
         .timeline-content li { margin-bottom: 0.5rem; }
         .timeline-content li::before { content: '▹'; color: var(--accent-gold); margin-right: 0.5rem; }
@@ -187,12 +189,6 @@
             border: 1px solid var(--accent-amber);
             background: radial-gradient(circle at top right, rgba(255, 183, 3, 0.05), #050505);
         }
-        .featured-badge {
-            position: absolute; top: 1rem; right: 1rem;
-            background: var(--accent-gold); color: #000;
-            font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
 
         /* --- SKILLS --- */
         .skill-section { margin-bottom: 2.5rem; }
@@ -242,14 +238,36 @@
                 <div class="hero-tags">&lt; SYSTEM.ONLINE /&gt;</div>
                 <h1 class="glitch">DEBARSHI<br>CHAKRABORTY</h1>
                 <p class="hero-subtitle">
-                    Distributed Systems Engineer & AI Researcher.<br>
-                    Building high-performance architectures at the intersection of <span style="color: var(--accent-gold)">Agentic AI</span>, <span style="color: var(--accent-gold)">DeFi</span>, and <span style="color: var(--accent-gold)">HPC</span>.
+                    AI Researcher & Distributed Systems Engineer.<br>
+                    Developing next-generation architectures powered by <span style="color: var(--accent-gold)">Agentic AI</span>, <span style="color: var(--accent-gold)">Deep Learning</span>, and <span style="color: var(--accent-gold)">HPC</span>.
                 </p>
                 <div class="social-bar">
                     <a href="mailto:debarshi2933@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
                     <a href="https://github.com/debarshi29" class="social-btn"><i class="fab fa-github"></i></a>
                     <a href="https://linkedin.com/in/debarshi29" class="social-btn"><i class="fab fa-linkedin"></i></a>
                     <a href="resume.pdf" class="social-btn" title="Resume"><i class="fas fa-file-alt"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="education">
+            <h2><i class="fas fa-graduation-cap"></i> Education</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">July 2024 - Present</div>
+                    <div class="timeline-content">
+                        <h3>M.Sc. in Big Data Analytics</h3>
+                        <h4>Ramakrishna Mission Vivekananda Educational and Research Institute</h4>
+                        <p>Focusing on Distributed Computing, Machine Learning, and Advanced Algorithms.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Sept 2021 - June 2024</div>
+                    <div class="timeline-content">
+                        <h3>B.Sc. in Mathematics (Honors)</h3>
+                        <h4>Ramakrishna Mission Vivekananda Centenary College</h4>
+                        <p>CGPA: 7.63</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -301,19 +319,19 @@
                         </div>
                         <div class="card-desc">
                             <p>
-                                An end-to-end institutional settlement system combining <span class="card-highlight">Hyperledger Besu</span> with <span class="card-highlight">IBFT-2 consensus</span> for immediate finality. The architecture eliminates settlement latency and counterparty risk.
+                                An end-to-end institutional settlement system. While leveraging blockchain for finality, the core innovation lies in the <strong>Agentic AI</strong> architecture for semantic trade validation.
                             </p>
                             <ul style="margin-top: 10px; margin-left: 20px; list-style-type: square;">
-                                <li><strong>Consensus:</strong> Implemented IBFT-2 for deterministic finality (2s block time).</li>
-                                <li><strong>Agentic AI:</strong> Deployed State-Based LangGraph agents (Llama 3.2) for semantic pre-trade validation and liquidity checks.</li>
-                                <li><strong>ML Security:</strong> Integrated Random Forest & XGBoost engines for real-time fraud detection with SHAP/LIME explainability.</li>
-                                <li><strong>Impact:</strong> Achieved <strong>91.7% reduction</strong> in risk exposure ($14.5M vs $1.2M) in Monte Carlo simulations.</li>
+                                <li><strong>Agentic AI:</strong> Deployed State-Based LangGraph agents (Llama 3.2) for pre-trade compliance and liquidity checks.</li>
+                                <li><strong>ML Fraud Detection:</strong> Integrated Random Forest & XGBoost engines for real-time anomaly detection with SHAP explainability.</li>
+                                <li><strong>Impact:</strong> Achieved <strong>91.7% reduction</strong> in counterparty risk via Monte Carlo simulations.</li>
+                                <li><strong>Consensus:</strong> Utilized IBFT-2 for deterministic finality (2s block time).</li>
                             </ul>
                         </div>
                         <div class="tech-stack">
-                            <span class="tech-tag">Hyperledger Besu</span>
                             <span class="tech-tag">Agentic AI</span>
-                            <span class="tech-tag">Web3</span>
+                            <span class="tech-tag">Hyperledger Besu</span>
+                            <span class="tech-tag">ML Fraud Detection</span>
                             <span class="tech-tag">IEEE WCONF 2025</span>
                         </div>
                     </div>
