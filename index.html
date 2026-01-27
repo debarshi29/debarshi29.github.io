@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debarshi Chakraborty | Distributed Intelligence</title>
+    <title>Debarshi Chakraborty | AI Architect</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,17 +11,17 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* --- THEME VARIABLES: VOID & GOLD --- */
+        /* --- THEME VARIABLES: NEON CYAN & VOID --- */
         :root {
-            --bg-void: #020202;
-            --bg-card: #0a0a0a;
-            --accent-gold: #FFD700;       /* Pure Gold */
-            --accent-amber: #FFB703;      /* Honey */
-            --accent-orange: #FB8500;     /* Deep Orange */
+            --bg-void: #020204;
+            --bg-card: #0a0a0c;
+            --accent-cyan: #00f2ea;      /* Electric Cyan */
+            --accent-blue: #4361ee;      /* Royal Blue */
+            --accent-purple: #7209b7;    /* Deep Purple */
             --text-main: #ffffff;
-            --text-muted: #9e9e9e;
-            --glass: rgba(20, 20, 20, 0.6);
-            --glass-border: rgba(255, 215, 0, 0.15);
+            --text-muted: #94a3b8;
+            --glass: rgba(10, 10, 15, 0.7);
+            --glass-border: rgba(0, 242, 234, 0.15);
             --font-head: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
@@ -36,18 +36,18 @@
             font-family: var(--font-body);
             overflow-x: hidden;
             line-height: 1.6;
-            selection-background-color: var(--accent-gold);
+            selection-background-color: var(--accent-cyan);
             selection-color: var(--bg-void);
         }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-void); }
-        ::-webkit-scrollbar-thumb { background: var(--accent-amber); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent-blue); border-radius: 3px; }
 
         /* --- PARTICLES & FX --- */
         #canvas-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.3;
+            z-index: -1; opacity: 0.25;
         }
         
         .vignette {
@@ -56,15 +56,15 @@
             z-index: -1; pointer-events: none;
         }
 
-        /* --- CUSTOM GOLD CURSOR --- */
+        /* --- CUSTOM CURSOR --- */
         #cursor {
             position: fixed; width: 20px; height: 20px;
-            border: 1px solid var(--accent-gold); border-radius: 50%;
+            border: 1px solid var(--accent-cyan); border-radius: 50%;
             transform: translate(-50%, -50%); pointer-events: none; z-index: 9999;
-            transition: width 0.2s, height 0.2s, background 0.2s; mix-blend-mode: exclusion;
+            transition: width 0.2s, height 0.2s, background 0.2s; mix-blend-mode: screen;
         }
         #cursor-dot {
-            position: fixed; width: 4px; height: 4px; background: var(--accent-gold);
+            position: fixed; width: 4px; height: 4px; background: var(--accent-cyan);
             border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 9999;
         }
 
@@ -81,12 +81,12 @@
         
         h2 { 
             font-size: 2.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem;
-            background: linear-gradient(to right, #fff, var(--accent-gold));
+            background: linear-gradient(to right, #fff, var(--accent-cyan));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         h2::after {
             content: ''; height: 1px; flex-grow: 1; 
-            background: linear-gradient(90deg, var(--accent-gold), transparent);
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
         }
 
         /* --- HERO --- */
@@ -97,7 +97,7 @@
         
         .glitch {
             font-size: 5rem; font-weight: 700; position: relative;
-            text-shadow: 2px 2px var(--accent-orange), -2px -2px #333;
+            text-shadow: 2px 2px var(--accent-blue), -2px -2px var(--accent-purple);
             animation: glitch 4s infinite alternate;
         }
         
@@ -107,45 +107,46 @@
         }
         
         .hero-tags {
-            font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.9rem;
+            font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.9rem;
             margin-bottom: 2rem; letter-spacing: 2px;
             border: 1px solid var(--glass-border); display: inline-block; padding: 8px 16px; border-radius: 20px;
+            background: rgba(0, 242, 234, 0.05);
         }
 
         @keyframes glitch {
-            0% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
-            25% { text-shadow: -2px 2px #333, 2px -2px var(--accent-orange); }
-            50% { text-shadow: 2px -2px var(--accent-orange), -2px 2px #333; }
-            100% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
+            0% { text-shadow: 2px 2px var(--accent-blue), -2px -2px var(--accent-purple); }
+            25% { text-shadow: -2px 2px var(--accent-purple), 2px -2px var(--accent-blue); }
+            50% { text-shadow: 2px -2px var(--accent-blue), -2px 2px var(--accent-purple); }
+            100% { text-shadow: 2px 2px var(--accent-blue), -2px -2px var(--accent-purple); }
         }
 
-        /* --- TIMELINE (EXPERIENCE & EDUCATION) --- */
+        /* --- TIMELINE --- */
         .timeline { position: relative; padding-left: 2rem; border-left: 1px solid var(--glass-border); }
         .timeline-item { position: relative; margin-bottom: 3rem; }
         .timeline-item:last-child { margin-bottom: 0; }
         .timeline-item::before {
             content: ''; position: absolute; left: -2.35rem; top: 5px;
             width: 10px; height: 10px; background: var(--bg-void);
-            border: 2px solid var(--accent-gold); border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-gold);
+            border: 2px solid var(--accent-cyan); border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-cyan);
         }
         .timeline-date { 
-            font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.85rem; 
+            font-family: var(--font-mono); color: var(--accent-cyan); font-size: 0.85rem; 
             margin-bottom: 0.5rem; letter-spacing: 1px;
         }
         .timeline-content h3 { font-size: 1.4rem; margin-bottom: 0.2rem; color: #fff; }
-        .timeline-content h4 { color: var(--accent-orange); font-weight: 500; margin-bottom: 0.5rem; font-size: 1rem; }
-        .timeline-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem; }
+        .timeline-content h4 { color: var(--accent-blue); font-weight: 500; margin-bottom: 0.5rem; font-size: 1rem; }
         .timeline-content ul { list-style: none; color: var(--text-muted); font-size: 0.95rem; }
         .timeline-content li { margin-bottom: 0.5rem; }
-        .timeline-content li::before { content: '▹'; color: var(--accent-gold); margin-right: 0.5rem; }
+        .timeline-content li::before { content: '▹'; color: var(--accent-cyan); margin-right: 0.5rem; }
+        .timeline-content p { color: var(--text-muted); font-size: 0.95rem; }
 
         /* --- PROJECTS GRID --- */
         .grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; }
         .grid-half { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
         
         .card {
-            background: linear-gradient(145deg, #0d0d0d, #050505);
+            background: linear-gradient(145deg, #0d0d10, #050507);
             border: 1px solid var(--glass-border);
             padding: 2.5rem; border-radius: 12px; position: relative; overflow: hidden;
             transition: all 0.4s ease;
@@ -153,15 +154,15 @@
         
         .card:hover { 
             transform: translateY(-5px); 
-            border-color: var(--accent-gold);
-            box-shadow: 0 10px 40px -10px rgba(255, 215, 0, 0.1); 
+            border-color: var(--accent-cyan);
+            box-shadow: 0 10px 40px -10px rgba(0, 242, 234, 0.1); 
         }
         
         /* Mouse Glow Effect */
         .card::before {
             content: ""; position: absolute; top: var(--y); left: var(--x);
-            width: 600px; height: 600px; 
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.08), transparent 60%);
+            width: 500px; height: 500px; 
+            background: radial-gradient(circle, rgba(0, 242, 234, 0.08), transparent 60%);
             transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.5s; 
             pointer-events: none; z-index: 1;
         }
@@ -172,7 +173,7 @@
         .card-head { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; }
         .card-head h3 { font-size: 1.5rem; color: var(--text-main); }
         .card-head a { color: var(--text-muted); font-size: 1.2rem; transition: color 0.3s; margin-left: 10px; }
-        .card-head a:hover { color: var(--accent-gold); }
+        .card-head a:hover { color: var(--accent-cyan); }
 
         .card-desc { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
         .card-highlight { color: #fff; font-weight: 600; }
@@ -180,56 +181,54 @@
         .tech-stack { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: auto; }
         .tech-tag { 
             font-size: 0.75rem; padding: 5px 12px; border-radius: 100px; 
-            background: rgba(255, 215, 0, 0.05); color: var(--accent-gold); border: 1px solid rgba(255, 215, 0, 0.2);
+            background: rgba(0, 242, 234, 0.05); color: var(--accent-cyan); border: 1px solid rgba(0, 242, 234, 0.2);
             font-family: var(--font-mono);
         }
 
-        /* --- FEATURED PROJECT SPECIAL STYLING --- */
+        /* --- FEATURED PROJECT --- */
         .featured-card {
-            border: 1px solid var(--accent-amber);
-            background: radial-gradient(circle at top right, rgba(255, 183, 3, 0.05), #050505);
+            border: 1px solid var(--accent-blue);
+            background: radial-gradient(circle at top right, rgba(67, 97, 238, 0.05), #050507);
         }
-
-        /* --- COURSEWORK GRID --- */
-        .course-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;
-        }
-        .course-card {
-            background: var(--bg-card); border: 1px solid var(--glass-border);
-            padding: 1.5rem; border-radius: 8px; text-align: center;
-            transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .course-card:hover { border-color: var(--accent-orange); transform: translateY(-5px); }
-        .course-num { 
-            font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.8rem; 
-            margin-bottom: 0.5rem; opacity: 0.6; display: block;
-        }
-        .course-title { font-size: 1rem; color: #fff; font-weight: 500; }
 
         /* --- SKILLS --- */
         .skill-section { margin-bottom: 2.5rem; }
         .skill-title { 
-            font-family: var(--font-mono); color: var(--accent-orange); 
+            font-family: var(--font-mono); color: var(--accent-blue); 
             margin-bottom: 1rem; display: block; font-size: 0.9rem; letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px;
         }
         .skill-list { display: flex; flex-wrap: wrap; gap: 1rem; }
         .skill-pill {
-            padding: 10px 18px; background: #0f0f0f; border: 1px solid #222;
-            border-radius: 6px; transition: 0.3s; display: flex; align-items: center; gap: 10px;
-            color: var(--text-muted); font-size: 0.9rem;
+            padding: 8px 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px; transition: 0.3s; display: flex; align-items: center; gap: 8px;
+            color: var(--text-muted); font-size: 0.85rem; font-family: var(--font-mono);
         }
-        .skill-pill i { color: var(--accent-gold); }
+        .skill-pill i { color: var(--accent-cyan); }
         .skill-pill:hover { 
-            border-color: var(--accent-gold); color: #fff; transform: translateY(-2px); 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            border-color: var(--accent-cyan); color: #fff; transform: translateY(-2px); 
+            background: rgba(0, 242, 234, 0.05);
         }
 
-        /* --- CONTACT & FOOTER --- */
+        /* --- COURSEWORK (Clean & Minimal) --- */
+        .course-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;
+        }
+        .course-card {
+            background: rgba(255,255,255,0.02); border-left: 2px solid var(--accent-blue);
+            padding: 1rem 1.5rem; border-radius: 0 4px 4px 0;
+            transition: 0.3s;
+        }
+        .course-card:hover { background: rgba(255,255,255,0.05); border-left-color: var(--accent-cyan); padding-left: 2rem; }
+        .course-title { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
+        .course-card:hover .course-title { color: #fff; }
+
+        /* --- CONTACT --- */
         .social-bar { display: flex; gap: 2rem; justify-content: center; margin-top: 3rem; }
         .social-btn {
             font-size: 1.5rem; color: var(--text-muted); transition: 0.3s;
         }
-        .social-btn:hover { color: var(--accent-gold); transform: scale(1.1); }
+        .social-btn:hover { color: var(--accent-cyan); transform: scale(1.1); text-shadow: 0 0 10px var(--accent-cyan); }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -243,7 +242,6 @@
 
     <div id="cursor"></div>
     <div id="cursor-dot"></div>
-
     <canvas id="canvas-bg"></canvas>
     <div class="vignette"></div>
 
@@ -251,11 +249,11 @@
         
         <section class="hero visible">
             <div>
-                <div class="hero-tags">&lt; SYSTEM.ONLINE /&gt;</div>
+                <div class="hero-tags">&lt; SYSTEM.INIT /&gt;</div>
                 <h1 class="glitch">DEBARSHI<br>CHAKRABORTY</h1>
                 <p class="hero-subtitle">
                     Distributed Systems Engineer & Generative AI Architect.<br>
-                    Bridging the gap between <strong>theoretical mathematics</strong> and <strong>production-grade intelligence</strong>—specializing in Deep Reinforcement Learning, NLP, and High-Performance Computing.
+                    Building <strong>autonomous Agentic AI</strong> systems and high-performance neural infrastructure—specializing in Deep Reinforcement Learning, NLP, and Distributed Computing.
                 </p>
                 <div class="social-bar">
                     <a href="mailto:debarshi2933@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
@@ -288,71 +286,8 @@
             </div>
         </section>
 
-        <section id="coursework">
-            <h2><i class="fas fa-book-open"></i> Academic Foundation</h2>
-            <div class="course-grid">
-                
-                <div class="course-card">
-                    <span class="course-num">01. MATH</span>
-                    <div class="course-title">Linear Algebra</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">02. MATH</span>
-                    <div class="course-title">Multivariate Calculus</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">03. MATH</span>
-                    <div class="course-title">Probability & Stochastic Processes</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">04. MATH</span>
-                    <div class="course-title">Multivariate Statistics</div>
-                </div>
-
-                <div class="course-card">
-                    <span class="course-num">05. CORE</span>
-                    <div class="course-title">Data Structures & Algorithms</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">06. CORE</span>
-                    <div class="course-title">DBMS & SQL</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">07. CORE</span>
-                    <div class="course-title">Java & Hadoop Ecosystem</div>
-                </div>
-
-                <div class="course-card">
-                    <span class="course-num">08. AI</span>
-                    <div class="course-title">Machine Learning</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">09. AI</span>
-                    <div class="course-title">Deep Learning & NLP</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">10. AI</span>
-                    <div class="course-title">Time Series Analysis</div>
-                </div>
-                
-                <div class="course-card">
-                    <span class="course-num">11. ADV</span>
-                    <div class="course-title">Graph DBs & Distributed Computing</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">12. ADV</span>
-                    <div class="course-title">Deep Reinforcement Learning</div>
-                </div>
-                <div class="course-card">
-                    <span class="course-num">13. ADV</span>
-                    <div class="course-title">Deep Learning for Cyber Security</div>
-                </div>
-
-            </div>
-        </section>
-
         <section id="experience">
-            <h2><i class="fas fa-history"></i> Experience</h2>
+            <h2><i class="fas fa-briefcase"></i> Experience</h2>
             <div class="timeline">
                 
                 <div class="timeline-item">
@@ -398,19 +333,18 @@
                         </div>
                         <div class="card-desc">
                             <p>
-                                An end-to-end institutional settlement system. While leveraging DLT for finality, the core innovation lies in the <strong>Agentic AI</strong> architecture for semantic trade validation.
+                                An end-to-end institutional settlement system. The core innovation utilizes <strong>Agentic AI</strong> for semantic trade validation and real-time anomaly detection.
                             </p>
                             <ul style="margin-top: 10px; margin-left: 20px; list-style-type: square;">
-                                <li><strong>Agentic AI:</strong> Deployed State-Based LangGraph agents (Llama 3.2) for pre-trade compliance and liquidity checks.</li>
-                                <li><strong>ML Fraud Detection:</strong> Integrated Random Forest & XGBoost engines for real-time anomaly detection with SHAP explainability.</li>
-                                <li><strong>Impact:</strong> Achieved <strong>91.7% reduction</strong> in counterparty risk via Monte Carlo simulations.</li>
-                                <li><strong>Consensus:</strong> Utilized IBFT-2 for deterministic finality (2s block time).</li>
+                                <li><strong>Agentic AI:</strong> State-Based LangGraph agents (Llama 3.2) for pre-trade compliance.</li>
+                                <li><strong>ML Security:</strong> Random Forest & XGBoost engines for real-time fraud detection.</li>
+                                <li><strong>Impact:</strong> Achieved <strong>91.7% reduction</strong> in counterparty risk.</li>
                             </ul>
                         </div>
                         <div class="tech-stack">
                             <span class="tech-tag">Agentic AI</span>
                             <span class="tech-tag">Hyperledger Besu</span>
-                            <span class="tech-tag">ML Fraud Detection</span>
+                            <span class="tech-tag">Fraud Detection</span>
                             <span class="tech-tag">IEEE WCONF 2025</span>
                         </div>
                     </div>
@@ -426,13 +360,8 @@
                         </div>
                         <div class="card-desc">
                             <p>
-                                A multi-agent Deep Reinforcement Learning framework for autonomous communication relays. Five agents coordinate to maintain connectivity between a base station and a dynamic target under physics/energy constraints.
+                                A multi-agent Deep Reinforcement Learning framework for autonomous communication relays. Five agents coordinate to maintain connectivity under physics/energy constraints using MAPPO.
                             </p>
-                            <ul style="margin-top: 10px; margin-left: 20px; list-style-type: square;">
-                                <li><strong>Algorithms:</strong> Benchmarked MAPPO, MADDPG, and QMIX. MAPPO achieved the highest stability (21,405 reward).</li>
-                                <li><strong>Environment:</strong> Custom MuJoCo/Python environment modeling signal attenuation and battery dynamics.</li>
-                                <li><strong>Key Insight:</strong> Continuous action spaces (MAPPO/MADDPG) significantly outperformed discrete approaches (QMIX) in spatial coordination.</li>
-                            </ul>
                         </div>
                         <div class="tech-stack">
                             <span class="tech-tag">Deep RL</span>
@@ -451,7 +380,7 @@
                                 <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                             <div class="card-desc">
-                                Built a GRU-based Seq2Seq model with Attention for abstractive summarization and fine-tuned <strong>DistilBERT</strong> for extractive QA. Evaluated using ROUGE, BLEU, and BERTScore metrics. Deployed via Streamlit.
+                                GRU-based Seq2Seq model for summarization and fine-tuned <strong>DistilBERT</strong> for extractive QA.
                             </div>
                             <div class="tech-stack">
                                 <span class="tech-tag">NLP</span>
@@ -468,7 +397,7 @@
                                 <a href="#"><i class="fab fa-github"></i></a>
                             </div>
                             <div class="card-desc">
-                                Engineered a distributed inference cluster for <strong>DeepSeek R1</strong> and <strong>Llama 3.2B</strong>. Implemented tensor and model parallelism in C++, achieving a <strong>2-4x throughput increase</strong> over single-node baselines.
+                                Distributed inference cluster for <strong>DeepSeek R1</strong> and <strong>Llama 3.2B</strong> using tensor parallelism.
                             </div>
                             <div class="tech-stack">
                                 <span class="tech-tag">C++</span>
@@ -486,7 +415,7 @@
                                 <a href="#"><i class="fas fa-chart-line"></i></a>
                             </div>
                             <div class="card-desc">
-                                Comparative analysis of Static MLPs versus LSTMs for high-frequency option pricing. Pivoted to directional classification, achieving <strong>60.39% accuracy</strong> in noisy market conditions, outperforming standard regression baselines.
+                                Directional Classification model for high-frequency option pricing, achieving <strong>60.39% accuracy</strong> in noisy markets.
                             </div>
                             <div class="tech-stack">
                                 <span class="tech-tag">LSTM</span>
@@ -503,12 +432,12 @@
                                 <a href="#"><i class="fas fa-shield-alt"></i></a>
                             </div>
                             <div class="card-desc">
-                                Implementation of <strong>Homomorphic Encryption</strong> for secure Transformer inference. Optimized mathematical formulations to run BERT-Tiny on encrypted data, ensuring total data privacy during processing.
+                                Privacy-preserving Transformer inference using Homomorphic Encryption for BERT-Tiny.
                             </div>
                             <div class="tech-stack">
                                 <span class="tech-tag">Cryptography</span>
                                 <span class="tech-tag">C++</span>
-                                <span class="tech-tag">Privacy Preserving AI</span>
+                                <span class="tech-tag">FHE</span>
                             </div>
                         </div>
                     </div>
@@ -521,40 +450,79 @@
             <h2><i class="fas fa-layer-group"></i> Technical Arsenal</h2>
             
             <div class="skill-section">
-                <span class="skill-title">BIG DATA & STORAGE</span>
+                <span class="skill-title">LANGUAGES & CORE</span>
                 <div class="skill-list">
-                    <div class="skill-pill"><i class="fas fa-fire"></i> PySpark</div>
-                    <div class="skill-pill"><i class="fas fa-network-wired"></i> Dask</div>
-                    <div class="skill-pill"><i class="fas fa-database"></i> PostgreSQL</div>
-                    <div class="skill-pill"><i class="fas fa-leaf"></i> MongoDB</div>
+                    <div class="skill-pill"><i class="fab fa-java"></i> Java</div>
+                    <div class="skill-pill"><i class="fab fa-python"></i> Python</div>
+                    <div class="skill-pill"><i class="fas fa-database"></i> SQL</div>
+                    <div class="skill-pill"><i class="fas fa-code"></i> Data Structures</div>
                 </div>
             </div>
 
             <div class="skill-section">
-                <span class="skill-title">VECTOR DATABASES (RAG)</span>
+                <span class="skill-title">DATA PROCESSING & ENGINEERING</span>
+                <div class="skill-list">
+                    <div class="skill-pill"><i class="fas fa-table"></i> Pandas</div>
+                    <div class="skill-pill"><i class="fas fa-bolt"></i> Polars</div>
+                    <div class="skill-pill"><i class="fas fa-calculator"></i> NumPy</div>
+                    <div class="skill-pill"><i class="fas fa-fire"></i> PySpark</div>
+                    <div class="skill-pill"><i class="fas fa-network-wired"></i> Dask</div>
+                </div>
+            </div>
+
+            <div class="skill-section">
+                <span class="skill-title">AI, ML & GRAPH</span>
+                <div class="skill-list">
+                    <div class="skill-pill"><i class="fas fa-brain"></i> PyTorch</div>
+                    <div class="skill-pill"><i class="fas fa-chart-bar"></i> Scikit-Learn</div>
+                    <div class="skill-pill"><i class="fas fa-project-diagram"></i> PyTorch Geometric</div>
+                    <div class="skill-pill"><i class="fas fa-share-alt"></i> Graph Neural Networks</div>
+                </div>
+            </div>
+
+            <div class="skill-section">
+                <span class="skill-title">WEB, SERVING & MLOPS</span>
+                <div class="skill-list">
+                    <div class="skill-pill"><i class="fas fa-server"></i> FastAPI</div>
+                    <div class="skill-pill"><i class="fab fa-python"></i> Django</div>
+                    <div class="skill-pill"><i class="fas fa-flask"></i> Flask</div>
+                    <div class="skill-pill"><i class="fas fa-stream"></i> Streamlit</div>
+                    <div class="skill-pill"><i class="fab fa-docker"></i> Docker</div>
+                </div>
+            </div>
+            
+            <div class="skill-section">
+                <span class="skill-title">VECTOR DB & RAG</span>
                 <div class="skill-list">
                     <div class="skill-pill"><i class="fas fa-search"></i> Qdrant</div>
                     <div class="skill-pill"><i class="fas fa-cube"></i> Weaviate</div>
-                    <div class="skill-pill"><i class="fas fa-shapes"></i> ChromaDB</div>
-                    <div class="skill-pill"><i class="fas fa-project-diagram"></i> Neo4j</div>
+                    <div class="skill-pill"><i class="fas fa-link"></i> LangChain</div>
                 </div>
             </div>
+        </section>
 
-            <div class="skill-section">
-                <span class="skill-title">CORE AI & ENGINEERING</span>
-                <div class="skill-list">
-                    <div class="skill-pill"><i class="fab fa-python"></i> Python</div>
-                    <div class="skill-pill"><i class="fas fa-microchip"></i> C++</div>
-                    <div class="skill-pill"><i class="fas fa-brain"></i> PyTorch</div>
-                    <div class="skill-pill"><i class="fas fa-link"></i> LangChain</div>
-                    <div class="skill-pill"><i class="fab fa-docker"></i> Docker</div>
-                </div>
+        <section id="coursework">
+            <h2><i class="fas fa-book-open"></i> Academic Coursework</h2>
+            <div class="course-grid">
+                <div class="course-card"><div class="course-title">Data Structures & Algorithms</div></div>
+                <div class="course-card"><div class="course-title">Java & Hadoop Ecosystem</div></div>
+                <div class="course-card"><div class="course-title">Database Management Systems</div></div>
+                <div class="course-card"><div class="course-title">Machine Learning</div></div>
+                <div class="course-card"><div class="course-title">Deep Learning & NLP</div></div>
+                <div class="course-card"><div class="course-title">Deep Learning for Cyber Security</div></div>
+                <div class="course-card"><div class="course-title">Deep Reinforcement Learning</div></div>
+                <div class="course-card"><div class="course-title">Time Series Analysis</div></div>
+                <div class="course-card"><div class="course-title">Graph DBs & Distributed Computing</div></div>
+                <div class="course-card"><div class="course-title">Probability & Stochastic Processes</div></div>
+                <div class="course-card"><div class="course-title">Multivariate Statistics</div></div>
+                <div class="course-card"><div class="course-title">Linear Algebra</div></div>
+                <div class="course-card"><div class="course-title">Multivariate Calculus</div></div>
             </div>
         </section>
 
         <section style="text-align: center; padding: 4rem 0;">
             <p style="color: var(--text-muted); font-size: 0.9rem;">
-                &copy; 2026 Debarshi Chakraborty. <span style="color: var(--accent-gold)">System Online.</span>
+                &copy; 2026 Debarshi Chakraborty. <span style="color: var(--accent-cyan)">System Online.</span>
             </p>
         </section>
 
@@ -615,7 +583,7 @@
                 vx: (Math.random() - 0.5) * 0.3,
                 vy: (Math.random() - 0.5) * 0.3,
                 size: Math.random() * 2,
-                color: Math.random() > 0.5 ? 'rgba(255, 215, 0, 0.4)' : 'rgba(251, 133, 0, 0.3)'
+                color: Math.random() > 0.5 ? 'rgba(0, 242, 234, 0.4)' : 'rgba(67, 97, 238, 0.3)'
             });
         }
 
