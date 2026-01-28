@@ -38,23 +38,26 @@
             line-height: 1.6;
             selection-background-color: var(--accent-gold);
             selection-color: var(--bg-void);
+            transition: background-color 0.3s;
         }
 
         /* --- SCROLL PROGRESS BAR --- */
         #progress-bar {
-            position: fixed; top: 0; left: 0; height: 3px;
+            position: fixed;
+            top: 0; left: 0; height: 3px;
             background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold));
             width: 0%; z-index: 10000;
             box-shadow: 0 0 15px var(--accent-gold);
             transition: width 0.1s;
         }
 
-        /* --- CINEMA MODE BACKDROP (New) --- */
+        /* --- CINEMA MODE BACKDROP --- */
         #cinema-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); z-index: 40; /* Below card (z-50) */
+            background: rgba(0, 0, 0, 0.85); 
+            z-index: 1000; /* High z-index but lower than focused card */
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
         }
         body.card-focused #cinema-overlay { opacity: 1; pointer-events: auto; }
 
@@ -90,32 +93,22 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
         
         section { 
-            padding: 6rem 0; opacity: 0; transform: translateY(30px); 
+            padding: 5rem 0; opacity: 0; transform: translateY(20px); 
             transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
         }
         section.visible { opacity: 1; transform: translateY(0); }
 
         h1, h2, h3 { font-family: var(--font-head); color: #fff; letter-spacing: -0.02em; }
         
-        /* 4️⃣ Section Entry Accent */
         h2 { 
             font-size: 2.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem;
             background: linear-gradient(to right, #fff, var(--accent-gold));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            position: relative;
         }
-        h2::before {
-            content: '>'; color: var(--accent-orange); font-family: var(--font-mono); margin-right: 10px;
-            opacity: 0; transform: translateX(-20px); transition: all 0.5s 0.2s;
-        }
-        section.visible h2::before { opacity: 1; transform: translateX(0); }
-        
         h2::after {
             content: ''; height: 1px; flex-grow: 1; 
             background: linear-gradient(90deg, var(--accent-gold), transparent);
-            transform: scaleX(0); transform-origin: left; transition: transform 0.8s 0.2s;
         }
-        section.visible h2::after { transform: scaleX(1); }
 
         /* --- HERO --- */
         .hero { 
@@ -123,30 +116,11 @@
             text-align: center; position: relative;
         }
 
-        /* 1️⃣ Hero Depth: Soft Halo + Breathing Motion */
-        .hero::before {
-            content: ''; position: absolute; top: 50%; left: 50%;
-            width: 600px; height: 600px; transform: translate(-50%, -50%);
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
-            z-index: -1; animation: hero-breathe 6s ease-in-out infinite;
-        }
-        @keyframes hero-breathe {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
-        }
-
-        /* 2️⃣ Glitch Title Refinement */
         .glitch {
             font-size: 5rem; font-weight: 700; position: relative;
-            text-shadow: 3px 0px 0px rgba(255,0,0,0.2), -3px 0px 0px rgba(0,255,255,0.2);
-            animation: glitch-anim 5s infinite;
+            text-shadow: 2px 2px var(--accent-orange), -2px -2px #333;
+            animation: glitch 4s infinite alternate;
             line-height: 1.1; margin-bottom: 1.5rem;
-        }
-        @keyframes glitch-anim {
-            0% { transform: skew(0deg); text-shadow: 3px 0px 0px rgba(255,0,0,0.2), -3px 0px 0px rgba(0,255,255,0.2); }
-            2% { transform: skew(2deg); text-shadow: -3px 0px 0px var(--accent-orange), 3px 0px 0px var(--bg-void); }
-            4% { transform: skew(0deg); text-shadow: 3px 0px 0px rgba(255,0,0,0.2), -3px 0px 0px rgba(0,255,255,0.2); }
-            100% { transform: skew(0deg); }
         }
         
         .hero-subtitle {
@@ -154,27 +128,15 @@
             line-height: 1.6; min-height: 3.2em;
         }
 
-        /* 3️⃣ Typed Text Focus Ring */
-        .typing-container {
-            display: inline-block;
-            position: relative;
-            padding: 0 10px;
-        }
-        /* Subtle glow under typed text */
-        .typing-container::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
-            opacity: 0.5;
-        }
-
+        /* TYPING EFFECT STYLING */
         #typed-text {
-            color: var(--accent-gold); font-weight: 600; text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            color: var(--accent-gold);
+            font-weight: 600;
         }
 
         .typing-cursor {
             display: inline-block; width: 2px; height: 1.2em; background-color: var(--accent-gold);
             animation: blink 1s step-end infinite; vertical-align: middle;
-            box-shadow: 0 0 10px var(--accent-gold);
         }
         @keyframes blink { 50% { opacity: 0; } }
 
@@ -182,10 +144,16 @@
             font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.9rem;
             margin-bottom: 2rem; letter-spacing: 2px;
             border: 1px solid var(--glass-border); display: inline-block; padding: 8px 16px; border-radius: 20px;
-            background: rgba(255, 215, 0, 0.05);
         }
 
-        /* --- TIMELINE HOVER STORYTELLING --- */
+        @keyframes glitch {
+            0% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
+            25% { text-shadow: -2px 2px #333, 2px -2px var(--accent-orange); }
+            50% { text-shadow: 2px -2px var(--accent-orange), -2px 2px #333; }
+            100% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
+        }
+
+        /* --- TIMELINE --- */
         .timeline { position: relative; padding-left: 2rem; border-left: 1px solid var(--glass-border); }
         .timeline-item { position: relative; margin-bottom: 3rem; transition: transform 0.3s; }
         .timeline-item:last-child { margin-bottom: 0; }
@@ -197,18 +165,12 @@
             box-shadow: 0 0 10px var(--accent-gold); transition: all 0.3s;
         }
         
-        /* 4️⃣ Timeline Hover Storytelling */
         .timeline-item:hover { transform: translateX(10px); }
-        .timeline-item:hover::before { 
-            background: var(--accent-gold); 
-            box-shadow: 0 0 20px var(--accent-gold), 0 0 40px var(--accent-orange); 
-            transform: scale(1.4); 
-        }
-        .timeline-item:hover .timeline-date { color: var(--accent-orange); text-shadow: 0 0 10px var(--accent-orange); }
+        .timeline-item:hover::before { background: var(--accent-gold); box-shadow: 0 0 20px var(--accent-gold); transform: scale(1.3); }
 
         .timeline-date { 
             font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.85rem; 
-            margin-bottom: 0.5rem; letter-spacing: 1px; transition: color 0.3s;
+            margin-bottom: 0.5rem; letter-spacing: 1px;
         }
         .timeline-content h3 { font-size: 1.4rem; margin-bottom: 0.2rem; color: #fff; }
         .timeline-content h4 { color: var(--accent-orange); font-weight: 500; margin-bottom: 0.5rem; font-size: 1rem; }
@@ -221,11 +183,10 @@
         .grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; transition: filter 0.3s; }
         .grid-half { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
         
-        /* Blur State (applied by JS via body class) */
+        /* Blur State (applied by JS) */
         body.card-focused .card:not(.focused) {
-            filter: blur(4px) grayscale(100%);
-            opacity: 0.2;
-            transform: scale(0.98);
+            filter: blur(5px) grayscale(100%);
+            opacity: 0.3;
             pointer-events: none;
         }
 
@@ -233,24 +194,24 @@
             background: linear-gradient(145deg, #0d0d0d, #050505);
             border: 1px solid var(--glass-border);
             padding: 2.5rem; border-radius: 12px; position: relative; overflow: hidden;
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
+            z-index: 1; /* Default Z-index */
         }
         
-        /* 5️⃣ Card Edge Highlight on Hover */
         .card:hover { 
-            transform: translateY(-8px); 
+            transform: translateY(-5px); 
             border-color: var(--accent-gold);
-            box-shadow: 0 15px 40px -10px rgba(255, 215, 0, 0.15); 
+            box-shadow: 0 10px 40px -10px rgba(255, 215, 0, 0.1); 
         }
 
-        /* 6️⃣ Project Focus Mode (Cinema) */
+        /* FOCUSED STATE: Pops up significantly above overlay */
         .card.focused {
-            transform: scale(1.05);
-            z-index: 50;
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 60px rgba(251, 133, 0, 0.25), 0 0 30px rgba(255, 215, 0, 0.1);
-            background: #000;
+            transform: scale(1.1);
+            z-index: 2000; /* Much higher than overlay (1000) */
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 60px rgba(251, 133, 0, 0.3);
+            background: #000; /* Ensure opaque background */
         }
         
         .card::before {
@@ -277,9 +238,7 @@
             font-family: var(--font-mono);
         }
 
-        .featured-card { border: 1px solid var(--accent-amber); background: radial-gradient(circle at top right, rgba(255, 183, 3, 0.05), #050505); }
-
-        /* --- 5️⃣ SKILL PULSE MICRO-INTERACTION --- */
+        /* --- SKILL PULSE MICRO-INTERACTION --- */
         @keyframes skill-pulse {
             0% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); border-color: rgba(255,255,255,0.1); }
             50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); border-color: var(--accent-gold); }
@@ -301,10 +260,9 @@
         .skill-pill i { color: var(--accent-gold); }
         
         .skill-pill:hover { 
-            color: #fff; transform: translateY(-3px); 
+            color: #fff; transform: translateY(-2px); 
             background: rgba(255, 215, 0, 0.05);
             animation: skill-pulse 1.5s infinite;
-            cursor: default;
         }
 
         /* --- COURSEWORK --- */
@@ -320,25 +278,12 @@
         .course-title { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
         .course-card:hover .course-title { color: #fff; }
 
-        /* --- 7️⃣ Footer Closure Glow --- */
-        footer {
-            text-align: center; padding: 6rem 0 4rem; 
-            position: relative;
-            overflow: hidden;
-        }
-        footer::before {
-            content: ''; position: absolute; bottom: -150px; left: 50%; transform: translateX(-50%);
-            width: 600px; height: 300px;
-            background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.15), transparent 70%);
-            z-index: -1; pointer-events: none;
-        }
-
         /* --- CONTACT --- */
         .social-bar { display: flex; gap: 2rem; justify-content: center; margin-top: 3rem; }
         .social-btn {
             font-size: 1.5rem; color: var(--text-muted); transition: 0.3s;
         }
-        .social-btn:hover { color: var(--accent-gold); transform: scale(1.2); text-shadow: 0 0 15px var(--accent-gold); }
+        .social-btn:hover { color: var(--accent-gold); transform: scale(1.1); text-shadow: 0 0 10px var(--accent-gold); }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -367,10 +312,7 @@
                 <h1 class="glitch">DEBARSHI<br>CHAKRABORTY</h1>
                 
                 <p class="hero-subtitle">
-                    <span class="typing-container">
-                        <span id="typed-text"></span><span class="typing-cursor"></span>
-                    </span>
-                    <br>
+                    <span id="typed-text"></span><span class="typing-cursor"></span><br>
                     Researching <strong>Financial Time-Series Forecasting</strong> using <strong>GNNs & Hypergraphs</strong>.
                 </p>
 
@@ -440,7 +382,7 @@
             <h2>Selected Projects</h2>
             <div class="grid">
 
-                <div class="card featured-card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
+                <div class="card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
                     <div class="card-content">
                         <div class="card-head">
                             <h3>Real-Time (T+0) Trade Settlement</h3>
@@ -640,11 +582,11 @@
             </div>
         </section>
 
-        <footer>
+        <section style="text-align: center; padding: 4rem 0;">
             <p style="color: var(--text-muted); font-size: 0.9rem;">
                 &copy; 2026 Debarshi Chakraborty. <span style="color: var(--accent-gold)">System Online.</span>
             </p>
-        </footer>
+        </section>
 
     </div>
 
