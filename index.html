@@ -38,21 +38,25 @@
             line-height: 1.6;
             selection-background-color: var(--accent-gold);
             selection-color: var(--bg-void);
-            transition: background-color 0.3s;
         }
 
         /* --- SCROLL PROGRESS BAR --- */
         #progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
+            position: fixed; top: 0; left: 0; height: 3px;
             background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold));
-            width: 0%;
-            z-index: 10000;
-            box-shadow: 0 0 10px var(--accent-gold);
+            width: 0%; z-index: 10000;
+            box-shadow: 0 0 15px var(--accent-gold);
             transition: width 0.1s;
         }
+
+        /* --- CINEMA MODE BACKDROP (New) --- */
+        #cinema-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 40; /* Below card (z-50) */
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            backdrop-filter: blur(4px);
+        }
+        body.card-focused #cinema-overlay { opacity: 1; pointer-events: auto; }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-void); }
@@ -86,22 +90,32 @@
         .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
         
         section { 
-            padding: 5rem 0; opacity: 0; transform: translateY(20px); 
+            padding: 6rem 0; opacity: 0; transform: translateY(30px); 
             transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
         }
         section.visible { opacity: 1; transform: translateY(0); }
 
         h1, h2, h3 { font-family: var(--font-head); color: #fff; letter-spacing: -0.02em; }
         
+        /* 4️⃣ Section Entry Accent */
         h2 { 
             font-size: 2.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem;
             background: linear-gradient(to right, #fff, var(--accent-gold));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            position: relative;
         }
+        h2::before {
+            content: '>'; color: var(--accent-orange); font-family: var(--font-mono); margin-right: 10px;
+            opacity: 0; transform: translateX(-20px); transition: all 0.5s 0.2s;
+        }
+        section.visible h2::before { opacity: 1; transform: translateX(0); }
+        
         h2::after {
             content: ''; height: 1px; flex-grow: 1; 
             background: linear-gradient(90deg, var(--accent-gold), transparent);
+            transform: scaleX(0); transform-origin: left; transition: transform 0.8s 0.2s;
         }
+        section.visible h2::after { transform: scaleX(1); }
 
         /* --- HERO --- */
         .hero { 
@@ -109,11 +123,30 @@
             text-align: center; position: relative;
         }
 
+        /* 1️⃣ Hero Depth: Soft Halo + Breathing Motion */
+        .hero::before {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 600px; height: 600px; transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
+            z-index: -1; animation: hero-breathe 6s ease-in-out infinite;
+        }
+        @keyframes hero-breathe {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* 2️⃣ Glitch Title Refinement */
         .glitch {
             font-size: 5rem; font-weight: 700; position: relative;
-            text-shadow: 2px 2px var(--accent-orange), -2px -2px #333;
-            animation: glitch 4s infinite alternate;
+            text-shadow: 3px 0px 0px rgba(255,0,0,0.2), -3px 0px 0px rgba(0,255,255,0.2);
+            animation: glitch-anim 5s infinite;
             line-height: 1.1; margin-bottom: 1.5rem;
+        }
+        @keyframes glitch-anim {
+            0% { transform: skew(0deg); text-shadow: 3px 0px 0px rgba(255,0,0,0.2), -3px 0px 0px rgba(0,255,255,0.2); }
+            2% { transform: skew(2deg); text-shadow: -3px 0px 0px var(--accent-orange), 3px 0px 0px var(--bg-void); }
+            4% { transform: skew(0deg); text-shadow: 3px 0px 0px rgba(255,0,0,0.2), -3px 0px 0px rgba(0,255,255,0.2); }
+            100% { transform: skew(0deg); }
         }
         
         .hero-subtitle {
@@ -121,15 +154,27 @@
             line-height: 1.6; min-height: 3.2em;
         }
 
-        /* TYPING EFFECT STYLING */
+        /* 3️⃣ Typed Text Focus Ring */
+        .typing-container {
+            display: inline-block;
+            position: relative;
+            padding: 0 10px;
+        }
+        /* Subtle glow under typed text */
+        .typing-container::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+            opacity: 0.5;
+        }
+
         #typed-text {
-            color: var(--accent-gold);
-            font-weight: 600;
+            color: var(--accent-gold); font-weight: 600; text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
         }
 
         .typing-cursor {
             display: inline-block; width: 2px; height: 1.2em; background-color: var(--accent-gold);
             animation: blink 1s step-end infinite; vertical-align: middle;
+            box-shadow: 0 0 10px var(--accent-gold);
         }
         @keyframes blink { 50% { opacity: 0; } }
 
@@ -137,13 +182,7 @@
             font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.9rem;
             margin-bottom: 2rem; letter-spacing: 2px;
             border: 1px solid var(--glass-border); display: inline-block; padding: 8px 16px; border-radius: 20px;
-        }
-
-        @keyframes glitch {
-            0% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
-            25% { text-shadow: -2px 2px #333, 2px -2px var(--accent-orange); }
-            50% { text-shadow: 2px -2px var(--accent-orange), -2px 2px #333; }
-            100% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
+            background: rgba(255, 215, 0, 0.05);
         }
 
         /* --- TIMELINE HOVER STORYTELLING --- */
@@ -158,13 +197,18 @@
             box-shadow: 0 0 10px var(--accent-gold); transition: all 0.3s;
         }
         
-        /* Hover Effect */
+        /* 4️⃣ Timeline Hover Storytelling */
         .timeline-item:hover { transform: translateX(10px); }
-        .timeline-item:hover::before { background: var(--accent-gold); box-shadow: 0 0 20px var(--accent-gold); transform: scale(1.3); }
+        .timeline-item:hover::before { 
+            background: var(--accent-gold); 
+            box-shadow: 0 0 20px var(--accent-gold), 0 0 40px var(--accent-orange); 
+            transform: scale(1.4); 
+        }
+        .timeline-item:hover .timeline-date { color: var(--accent-orange); text-shadow: 0 0 10px var(--accent-orange); }
 
         .timeline-date { 
             font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.85rem; 
-            margin-bottom: 0.5rem; letter-spacing: 1px;
+            margin-bottom: 0.5rem; letter-spacing: 1px; transition: color 0.3s;
         }
         .timeline-content h3 { font-size: 1.4rem; margin-bottom: 0.2rem; color: #fff; }
         .timeline-content h4 { color: var(--accent-orange); font-weight: 500; margin-bottom: 0.5rem; font-size: 1rem; }
@@ -177,10 +221,11 @@
         .grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; transition: filter 0.3s; }
         .grid-half { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
         
-        /* Blur State (applied by JS) */
+        /* Blur State (applied by JS via body class) */
         body.card-focused .card:not(.focused) {
-            filter: blur(5px) grayscale(100%);
-            opacity: 0.3;
+            filter: blur(4px) grayscale(100%);
+            opacity: 0.2;
+            transform: scale(0.98);
             pointer-events: none;
         }
 
@@ -188,22 +233,23 @@
             background: linear-gradient(145deg, #0d0d0d, #050505);
             border: 1px solid var(--glass-border);
             padding: 2.5rem; border-radius: 12px; position: relative; overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
         }
         
+        /* 5️⃣ Card Edge Highlight on Hover */
         .card:hover { 
-            transform: translateY(-5px); 
+            transform: translateY(-8px); 
             border-color: var(--accent-gold);
-            box-shadow: 0 10px 40px -10px rgba(255, 215, 0, 0.1); 
+            box-shadow: 0 15px 40px -10px rgba(255, 215, 0, 0.15); 
         }
 
-        /* Focused State */
+        /* 6️⃣ Project Focus Mode (Cinema) */
         .card.focused {
-            transform: scale(1.02);
+            transform: scale(1.05);
             z-index: 50;
-            border-color: var(--accent-orange);
-            box-shadow: 0 0 50px rgba(251, 133, 0, 0.2);
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 60px rgba(251, 133, 0, 0.25), 0 0 30px rgba(255, 215, 0, 0.1);
             background: #000;
         }
         
@@ -233,7 +279,7 @@
 
         .featured-card { border: 1px solid var(--accent-amber); background: radial-gradient(circle at top right, rgba(255, 183, 3, 0.05), #050505); }
 
-        /* --- SKILL PULSE MICRO-INTERACTION --- */
+        /* --- 5️⃣ SKILL PULSE MICRO-INTERACTION --- */
         @keyframes skill-pulse {
             0% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); border-color: rgba(255,255,255,0.1); }
             50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); border-color: var(--accent-gold); }
@@ -254,11 +300,11 @@
         }
         .skill-pill i { color: var(--accent-gold); }
         
-        /* Pulse Effect */
         .skill-pill:hover { 
-            color: #fff; transform: translateY(-2px); 
+            color: #fff; transform: translateY(-3px); 
             background: rgba(255, 215, 0, 0.05);
             animation: skill-pulse 1.5s infinite;
+            cursor: default;
         }
 
         /* --- COURSEWORK --- */
@@ -274,12 +320,25 @@
         .course-title { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
         .course-card:hover .course-title { color: #fff; }
 
+        /* --- 7️⃣ Footer Closure Glow --- */
+        footer {
+            text-align: center; padding: 6rem 0 4rem; 
+            position: relative;
+            overflow: hidden;
+        }
+        footer::before {
+            content: ''; position: absolute; bottom: -150px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 300px;
+            background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.15), transparent 70%);
+            z-index: -1; pointer-events: none;
+        }
+
         /* --- CONTACT --- */
         .social-bar { display: flex; gap: 2rem; justify-content: center; margin-top: 3rem; }
         .social-btn {
             font-size: 1.5rem; color: var(--text-muted); transition: 0.3s;
         }
-        .social-btn:hover { color: var(--accent-gold); transform: scale(1.1); text-shadow: 0 0 10px var(--accent-gold); }
+        .social-btn:hover { color: var(--accent-gold); transform: scale(1.2); text-shadow: 0 0 15px var(--accent-gold); }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -292,6 +351,8 @@
 <body>
 
     <div id="progress-bar"></div>
+    
+    <div id="cinema-overlay"></div>
 
     <div id="cursor"></div>
     <div id="cursor-dot"></div>
@@ -306,7 +367,10 @@
                 <h1 class="glitch">DEBARSHI<br>CHAKRABORTY</h1>
                 
                 <p class="hero-subtitle">
-                    <span id="typed-text"></span><span class="typing-cursor"></span><br>
+                    <span class="typing-container">
+                        <span id="typed-text"></span><span class="typing-cursor"></span>
+                    </span>
+                    <br>
                     Researching <strong>Financial Time-Series Forecasting</strong> using <strong>GNNs & Hypergraphs</strong>.
                 </p>
 
@@ -319,28 +383,8 @@
             </div>
         </section>
 
-        <section id="education">
-            <h2><i class="fas fa-graduation-cap"></i> Education</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">July 2024 - Present</div>
-                    <div class="timeline-content">
-                        <h3>M.Sc. in Big Data Analytics</h3>
-                        <h4>Ramakrishna Mission Vivekananda Educational and Research Institute</h4>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">Sept 2021 - June 2024</div>
-                    <div class="timeline-content">
-                        <h3>B.Sc. in Mathematics (Honors)</h3>
-                        <h4>Ramakrishna Mission Vivekananda Centenary College</h4>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <section id="experience">
-            <h2><i class="fas fa-briefcase"></i> Experience</h2>
+            <h2>Experience</h2>
             <div class="timeline">
                 
                 <div class="timeline-item">
@@ -371,8 +415,29 @@
             </div>
         </section>
 
+        <section id="education">
+            <h2>Education</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">July 2024 - Present</div>
+                    <div class="timeline-content">
+                        <h3>M.Sc. in Big Data Analytics</h3>
+                        <h4>Ramakrishna Mission Vivekananda Educational and Research Institute</h4>
+                        <p>Focusing on Distributed Computing, Machine Learning, and Advanced Algorithms.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">Sept 2021 - June 2024</div>
+                    <div class="timeline-content">
+                        <h3>B.Sc. in Mathematics (Honors)</h3>
+                        <h4>Ramakrishna Mission Vivekananda Centenary College</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="projects">
-            <h2><i class="fas fa-code-branch"></i> Selected Projects</h2>
+            <h2>Selected Projects</h2>
             <div class="grid">
 
                 <div class="card featured-card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
@@ -389,7 +454,7 @@
                             </p>
                             <ul style="margin-top: 10px; margin-left: 20px; list-style-type: square;">
                                 <li><strong>Infrastructure:</strong> Architected a 4-node consensus network using IBFT-2 to guarantee deterministic settlement finality.</li>
-                                <li><strong>Agentic AI:</strong> State-Based LangGraph agents (Llama 3.2) for pre-trade compliance and anomaly detection.</li>
+                                <li><strong>Agentic AI:</strong> State-Based LangGraph agents (Llama 3.2) for pre-trade compliance.</li>
                                 <li><strong>ML Security:</strong> Random Forest & XGBoost engines for real-time fraud detection.</li>
                                 <li><strong>Impact:</strong> Achieved <strong>91.7% reduction</strong> in counterparty risk.</li>
                             </ul>
@@ -397,7 +462,8 @@
                         <div class="tech-stack">
                             <span class="tech-tag">Agentic AI</span>
                             <span class="tech-tag">Hyperledger Besu</span>
-                            <span class="tech-tag">Fraud Detection</span>    
+                            <span class="tech-tag">Fraud Detection</span>
+                            <span class="tech-tag">IEEE WCONF 2025</span>
                         </div>
                     </div>
                 </div>
@@ -445,7 +511,7 @@
                     <div class="card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
                         <div class="card-content">
                             <div class="card-head">
-                                <h3>Distributed Inference for Large Language Models</h3>
+                                <h3>Distributed LLM Inference Engine</h3>
                                 <a href="https://github.com/debarshi29/Distributed-Large-Language-Models" target="_blank"><i class="fab fa-github"></i></a>
                             </div>
                             <div class="card-desc">
@@ -453,9 +519,9 @@
                             </div>
                             <div class="tech-stack">
                                 <span class="tech-tag">C++</span>
-                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">HPC</span>
                                 <span class="tech-tag">CUDA</span>
-                                <span class="tech-tag">Distributed Computing</span>
+                                <span class="tech-tag">MPI</span>
                             </div>
                         </div>
                     </div>
@@ -499,7 +565,7 @@
         </section>
 
         <section id="skills">
-            <h2><i class="fas fa-layer-group"></i> Technical Arsenal</h2>
+            <h2>Technical Arsenal</h2>
             
             <div class="skill-section">
                 <span class="skill-title">LANGUAGES & CORE</span>
@@ -556,7 +622,7 @@
         </section>
 
         <section id="coursework">
-            <h2><i class="fas fa-book-open"></i> Academic Coursework</h2>
+            <h2>Academic Coursework</h2>
             <div class="course-grid">
                 <div class="course-card"><div class="course-title">Data Structures & Algorithms</div></div>
                 <div class="course-card"><div class="course-title">Java & Hadoop Ecosystem</div></div>
@@ -574,11 +640,11 @@
             </div>
         </section>
 
-        <section style="text-align: center; padding: 4rem 0;">
+        <footer>
             <p style="color: var(--text-muted); font-size: 0.9rem;">
                 &copy; 2026 Debarshi Chakraborty. <span style="color: var(--accent-gold)">System Online.</span>
             </p>
-        </section>
+        </footer>
 
     </div>
 
@@ -595,8 +661,8 @@
         const textElement = document.getElementById('typed-text');
         const roles = [
             "GenAI Engineer",
-            "Distributed Systems",
-            "Deep Learning Enthusiast"
+            "Distributed Systems Builder",
+            "ML Research Enthusiast"
         ];
         let roleIndex = 0;
         let charIndex = 0;
@@ -628,7 +694,7 @@
         }
         document.addEventListener('DOMContentLoaded', type);
 
-        // --- CLICK TO FOCUS CARD ---
+        // --- CLICK TO FOCUS CARD (Cinema Mode) ---
         function toggleFocus(card) {
             const body = document.body;
             
@@ -638,14 +704,10 @@
                 body.classList.remove('card-focused');
             } else {
                 // Focus
-                // Remove focus from any other card
                 document.querySelectorAll('.card').forEach(c => c.classList.remove('focused'));
-                
                 card.classList.add('focused');
                 body.classList.add('card-focused');
             }
-            
-            // Stop propagation so body click doesn't immediately fire
             event.stopPropagation();
         }
 
@@ -715,16 +777,13 @@
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
-                
                 if (p.x < 0) p.x = canvas.width;
                 if (p.x > canvas.width) p.x = 0;
                 if (p.y < 0) p.y = canvas.height;
                 if (p.y > canvas.height) p.y = 0;
-
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fillStyle = p.color;
