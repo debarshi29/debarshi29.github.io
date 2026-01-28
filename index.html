@@ -207,10 +207,10 @@
 
         /* FOCUSED STATE: Pops up significantly above overlay */
         .card.focused {
-            transform: scale(1.15) translateY(-20px);
+            transform: scale(1.1);
             z-index: 2000; /* Much higher than overlay (1000) */
             border-color: var(--accent-orange);
-            box-shadow: 0 20px 80px rgba(251, 133, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 60px rgba(251, 133, 0, 0.3);
             background: #000; /* Ensure opaque background */
         }
         
@@ -317,7 +317,7 @@
                 </p>
 
                 <div class="social-bar">
-                    <a href="/cdn-cgi/l/email-protection#aacecfc8cbd8d9c2c398939999eacdc7cbc3c684c9c5c7" class="social-btn"><i class="fas fa-envelope"></i></a>
+                    <a href="mailto:debarshi2933@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
                     <a href="https://github.com/debarshi29" class="social-btn"><i class="fab fa-github"></i></a>
                     <a href="https://linkedin.com/in/debarshi29" class="social-btn"><i class="fab fa-linkedin"></i></a>
                     <a href="resume.pdf" class="social-btn" title="Resume"><i class="fas fa-file-alt"></i></a>
@@ -590,7 +590,7 @@
 
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // --- SCROLL PROGRESS BAR ---
         window.addEventListener('scroll', () => {
             const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
@@ -728,4 +728,12 @@
                 if (p.y > canvas.height) p.y = 0;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = p.c
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
