@@ -38,13 +38,11 @@
             line-height: 1.6;
             selection-background-color: var(--accent-gold);
             selection-color: var(--bg-void);
-            transition: background-color 0.3s;
         }
 
         /* --- SCROLL PROGRESS BAR --- */
         #progress-bar {
-            position: fixed;
-            top: 0; left: 0; height: 3px;
+            position: fixed; top: 0; left: 0; height: 3px;
             background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold));
             width: 0%; z-index: 10000;
             box-shadow: 0 0 15px var(--accent-gold);
@@ -54,7 +52,7 @@
         /* --- CINEMA MODE BACKDROP --- */
         #cinema-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); 
+            background: rgba(0, 0, 0, 0.9); 
             z-index: 1000; 
             opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
             backdrop-filter: blur(8px);
@@ -89,33 +87,59 @@
             border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 9999;
         }
 
-        /* --- LAYOUT --- */
+        /* --- LAYOUT & ANIMATIONS --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
         
         section { 
-            padding: 5rem 0; opacity: 0; transform: translateY(20px); 
+            padding: 6rem 0; opacity: 0; transform: translateY(30px); 
             transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
         }
         
-        /* FIX: transform: none prevents stacking context issues with fixed overlay */
+        /* Reset transform on visible to fix stacking context issues */
         section.visible { opacity: 1; transform: none; }
 
         h1, h2, h3 { font-family: var(--font-head); color: #fff; letter-spacing: -0.02em; }
         
+        /* 2️⃣ Section Entry Accent (Animated Underline) */
         h2 { 
-            font-size: 2.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem;
+            font-size: 2.5rem; margin-bottom: 3rem; display: inline-block; position: relative;
             background: linear-gradient(to right, #fff, var(--accent-gold));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        
         h2::after {
-            content: ''; height: 1px; flex-grow: 1; 
+            content: ""; display: block; height: 3px; width: 0;
             background: linear-gradient(90deg, var(--accent-gold), transparent);
+            margin-top: 0.5rem; transition: width 0.8s ease-out;
         }
+        
+        section.visible h2::after { width: 100%; }
 
         /* --- HERO --- */
         .hero { 
             min-height: 100vh; display: flex; align-items: center; justify-content: center; 
             text-align: center; position: relative;
+        }
+
+        /* 1️⃣ Hero Depth: Soft Halo + Breathing Motion */
+        .hero-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            z-index: -1; animation: breathe 6s ease-in-out infinite; pointer-events: none;
+        }
+        @keyframes breathe {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.9); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Hero Fade-In Scale Animation */
+        .hero-content {
+            opacity: 0; animation: fadeScale 1s ease-out forwards 0.2s;
+        }
+        @keyframes fadeScale {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .glitch {
@@ -131,14 +155,12 @@
         }
 
         /* TYPING EFFECT STYLING */
-        #typed-text {
-            color: var(--accent-gold);
-            font-weight: 600;
-        }
+        #typed-text { color: var(--accent-gold); font-weight: 600; text-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
 
         .typing-cursor {
-            display: inline-block; width: 2px; height: 1.2em; background-color: var(--accent-gold);
+            display: inline-block; width: 3px; height: 1.2em; background-color: var(--accent-gold);
             animation: blink 1s step-end infinite; vertical-align: middle;
+            box-shadow: 0 0 10px var(--accent-gold);
         }
         @keyframes blink { 50% { opacity: 0; } }
 
@@ -146,6 +168,7 @@
             font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.9rem;
             margin-bottom: 2rem; letter-spacing: 2px;
             border: 1px solid var(--glass-border); display: inline-block; padding: 8px 16px; border-radius: 20px;
+            background: rgba(255, 215, 0, 0.05);
         }
 
         @keyframes glitch {
@@ -155,7 +178,7 @@
             100% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
         }
 
-        /* --- TIMELINE --- */
+        /* --- TIMELINE HOVER STORYTELLING --- */
         .timeline { position: relative; padding-left: 2rem; border-left: 1px solid var(--glass-border); }
         .timeline-item { position: relative; margin-bottom: 3rem; transition: transform 0.3s; }
         .timeline-item:last-child { margin-bottom: 0; }
@@ -167,12 +190,18 @@
             box-shadow: 0 0 10px var(--accent-gold); transition: all 0.3s;
         }
         
+        /* 4️⃣ Timeline Interaction */
         .timeline-item:hover { transform: translateX(10px); }
-        .timeline-item:hover::before { background: var(--accent-gold); box-shadow: 0 0 20px var(--accent-gold); transform: scale(1.3); }
+        .timeline-item:hover::before { 
+            background: var(--accent-gold); 
+            box-shadow: 0 0 20px var(--accent-gold), 0 0 40px var(--accent-orange); 
+            transform: scale(1.4); 
+        }
+        .timeline-item:hover .timeline-date { color: var(--accent-orange); text-shadow: 0 0 8px var(--accent-orange); }
 
         .timeline-date { 
             font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.85rem; 
-            margin-bottom: 0.5rem; letter-spacing: 1px;
+            margin-bottom: 0.5rem; letter-spacing: 1px; transition: color 0.3s;
         }
         .timeline-content h3 { font-size: 1.4rem; margin-bottom: 0.2rem; color: #fff; }
         .timeline-content h4 { color: var(--accent-orange); font-weight: 500; margin-bottom: 0.5rem; font-size: 1rem; }
@@ -185,36 +214,34 @@
         .grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; transition: filter 0.3s; }
         .grid-half { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
         
-        /* Blur State (applied by JS) */
+        /* Blur State */
         body.card-focused .card:not(.focused) {
-            filter: blur(5px) grayscale(100%);
-            opacity: 0.3;
-            pointer-events: none;
+            filter: blur(6px) grayscale(100%); opacity: 0.2; pointer-events: none; transform: scale(0.95);
         }
 
         .card {
-            background: #0d0d0d; /* Solid background ensures opacity over blur */
             background: linear-gradient(145deg, #0d0d0d, #050505);
             border: 1px solid var(--glass-border);
             padding: 2.5rem; border-radius: 12px; position: relative; overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             cursor: pointer;
-            z-index: 1; /* Default Z-index */
+            z-index: 1;
         }
         
+        /* 3️⃣ Project Card Hover Depth */
         .card:hover { 
-            transform: translateY(-5px); 
+            transform: translateY(-8px) scale(1.01); 
             border-color: var(--accent-gold);
-            box-shadow: 0 10px 40px -10px rgba(255, 215, 0, 0.1); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 20px rgba(255, 215, 0, 0.15); 
         }
 
-        /* FOCUSED STATE: Pops up significantly above overlay */
+        /* 6️⃣ Project Focus Mode (Cinema) */
         .card.focused {
-            transform: scale(1.05); /* Slight pop */
-            z-index: 2000; /* Much higher than overlay (1000) */
+            transform: scale(1.05);
+            z-index: 2000;
             border-color: var(--accent-orange);
-            box-shadow: 0 0 60px rgba(251, 133, 0, 0.3);
-            background: #000; /* Ensure opaque background */
+            box-shadow: 0 0 80px rgba(251, 133, 0, 0.2), 0 0 30px rgba(255, 215, 0, 0.1);
+            background: #000;
             cursor: zoom-out;
         }
         
@@ -242,7 +269,7 @@
             font-family: var(--font-mono);
         }
 
-        /* --- SKILL PULSE MICRO-INTERACTION --- */
+        /* --- 4️⃣ SKILL PULSE MICRO-INTERACTION --- */
         @keyframes skill-pulse {
             0% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); border-color: rgba(255,255,255,0.1); }
             50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); border-color: var(--accent-gold); }
@@ -264,9 +291,10 @@
         .skill-pill i { color: var(--accent-gold); }
         
         .skill-pill:hover { 
-            color: #fff; transform: translateY(-2px); 
+            color: #fff; transform: translateY(-3px); 
             background: rgba(255, 215, 0, 0.05);
             animation: skill-pulse 1.5s infinite;
+            cursor: default;
         }
 
         /* --- COURSEWORK --- */
@@ -282,12 +310,22 @@
         .course-title { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
         .course-card:hover .course-title { color: #fff; }
 
-        /* --- CONTACT --- */
+        /* --- FOOTER & CONTACT --- */
+        footer {
+            text-align: center; padding: 6rem 0 4rem; position: relative; overflow: hidden;
+        }
+        footer::before {
+            content: ''; position: absolute; bottom: -150px; left: 50%; transform: translateX(-50%);
+            width: 600px; height: 300px;
+            background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.1), transparent 70%);
+            z-index: -1; pointer-events: none;
+        }
+
         .social-bar { display: flex; gap: 2rem; justify-content: center; margin-top: 3rem; }
         .social-btn {
             font-size: 1.5rem; color: var(--text-muted); transition: 0.3s;
         }
-        .social-btn:hover { color: var(--accent-gold); transform: scale(1.1); text-shadow: 0 0 10px var(--accent-gold); }
+        .social-btn:hover { color: var(--accent-gold); transform: scale(1.2); text-shadow: 0 0 15px var(--accent-gold); }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -311,13 +349,17 @@
     <div class="container">
         
         <section class="hero visible">
-            <div>
+            <div class="hero-glow"></div>
+            <div class="hero-content">
                 <div class="hero-tags">&lt; SYSTEM.INIT /&gt;</div>
                 <h1 class="glitch">DEBARSHI<br>CHAKRABORTY</h1>
                 
                 <p class="hero-subtitle">
-                    <span id="typed-text"></span><span class="typing-cursor"></span><br>
-                    Researching <strong>Financial Time-Series Forecasting</strong> using <strong>GNNs & Hypergraphs</strong>.
+                    <span class="typing-container">
+                        <span id="typed-text"></span><span class="typing-cursor"></span>
+                    </span>
+                    <br>
+                    Building systems that reason over market dynamics.
                 </p>
 
                 <div class="social-bar">
@@ -369,6 +411,7 @@
                     <div class="timeline-content">
                         <h3>M.Sc. in Big Data Analytics</h3>
                         <h4>Ramakrishna Mission Vivekananda Educational and Research Institute</h4>
+                        <p>Focusing on Distributed Computing, Machine Learning, and Advanced Algorithms.</p>
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -401,7 +444,6 @@
                                 <li><strong>Infrastructure:</strong> Architected a 4-node consensus network using IBFT-2 to guarantee deterministic settlement finality.</li>
                                 <li><strong>Agentic AI:</strong> State-Based LangGraph agents (Llama 3.2) for pre-trade compliance.</li>
                                 <li><strong>ML Security:</strong> Random Forest & XGBoost engines for real-time fraud detection.</li>
-                                <li><strong>Explainable AI:</strong> Used SHAP and LIME to justify model decisions.</li>
                                 <li><strong>Impact:</strong> Achieved <strong>91.7% reduction</strong> in counterparty risk.</li>
                             </ul>
                         </div>
@@ -409,7 +451,7 @@
                             <span class="tech-tag">Agentic AI</span>
                             <span class="tech-tag">Hyperledger Besu</span>
                             <span class="tech-tag">Fraud Detection</span>
-                            <span class="tech-tag">XAI</span>
+                            <span class="tech-tag">IEEE WCONF 2025</span>
                         </div>
                     </div>
                 </div>
@@ -430,7 +472,7 @@
                         <div class="tech-stack">
                             <span class="tech-tag">Deep RL</span>
                             <span class="tech-tag">MAPPO</span>
-                            <span class="tech-tag">MARL</span>
+                            <span class="tech-tag">MuJoCo</span>
                             <span class="tech-tag">PyTorch</span>
                         </div>
                     </div>
@@ -465,9 +507,9 @@
                             </div>
                             <div class="tech-stack">
                                 <span class="tech-tag">C++</span>
-                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">HPC</span>
                                 <span class="tech-tag">CUDA</span>
-                                <span class="tech-tag">Distributed Computing</span>
+                                <span class="tech-tag">MPI</span>
                             </div>
                         </div>
                     </div>
@@ -519,7 +561,7 @@
                     <div class="skill-pill"><i class="fab fa-java"></i> Java</div>
                     <div class="skill-pill"><i class="fab fa-python"></i> Python</div>
                     <div class="skill-pill"><i class="fas fa-database"></i> SQL</div>
-                    <div class="skill-pill"><i class="fas fa-code"></i> Data Structures and Algorithms</div>
+                    <div class="skill-pill"><i class="fas fa-code"></i> Data Structures</div>
                 </div>
             </div>
 
@@ -571,7 +613,7 @@
             <h2>Academic Coursework</h2>
             <div class="course-grid">
                 <div class="course-card"><div class="course-title">Data Structures & Algorithms</div></div>
-                <div class="course-card"><div class="course-title">Java & Hadoop</div></div>
+                <div class="course-card"><div class="course-title">Java & Hadoop Ecosystem</div></div>
                 <div class="course-card"><div class="course-title">Database Management Systems</div></div>
                 <div class="course-card"><div class="course-title">Machine Learning</div></div>
                 <div class="course-card"><div class="course-title">Deep Learning & NLP</div></div>
@@ -586,11 +628,11 @@
             </div>
         </section>
 
-        <section style="text-align: center; padding: 4rem 0;">
+        <footer>
             <p style="color: var(--text-muted); font-size: 0.9rem;">
                 &copy; 2026 Debarshi Chakraborty. <span style="color: var(--accent-gold)">System Online.</span>
             </p>
-        </section>
+        </footer>
 
     </div>
 
