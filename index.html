@@ -1,782 +1,827 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Debarshi Chakraborty | GenAI & Distributed Systems</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Debarshi Chakraborty</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,200;0,9..144,300;1,9..144,100;1,9..144,200;1,9..144,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
 
-    <style>
-        /* --- THEME VARIABLES: VOID & GOLD --- */
-        :root {
-            --bg-void: #020202;
-            --bg-card: #0a0a0a;
-            --accent-gold: #FFD700;       /* Pure Gold */
-            --accent-amber: #FFB703;      /* Honey */
-            --accent-orange: #FB8500;     /* Deep Orange */
-            --text-main: #ffffff;
-            --text-muted: #9e9e9e;
-            --glass: rgba(20, 20, 20, 0.6);
-            --glass-border: rgba(255, 215, 0, 0.15);
-            --font-head: 'Space Grotesk', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-        }
+:root {
+  --bg:       #151a13;
+  --surface:  #1a2018;
+  --lift:     #1f261c;
+  --border:   rgba(180,160,100,0.08);
+  --border2:  rgba(180,160,100,0.14);
+  --text:     #d8d0be;
+  --muted:    rgba(220,210,185,0.35);
+  --dim:      rgba(220,210,185,0.12);
+  --white:    #eee8dc;
+  --green:    rgba(140,180,90,0.65);
+  --green2:   rgba(140,180,90,0.85);
+  --green-hi: rgba(160,200,100,0.18);
+  --f-serif:  'Fraunces', serif;
+  --f-mono:   'DM Mono', monospace;
+}
 
-        /* --- RESET & BASE --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; scroll-behavior: smooth; }
-        
-        body {
-            background-color: var(--bg-void);
-            color: var(--text-main);
-            font-family: var(--font-body);
-            overflow-x: hidden;
-            line-height: 1.6;
-            selection-background-color: var(--accent-gold);
-            selection-color: var(--bg-void);
-            transition: background-color 0.3s;
-        }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
 
-        /* --- SCROLL PROGRESS BAR --- */
-        #progress-bar {
-            position: fixed; top: 0; left: 0; height: 3px;
-            background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold));
-            width: 0%; z-index: 10000;
-            box-shadow: 0 0 15px var(--accent-gold);
-            transition: width 0.1s;
-        }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--f-serif);
+  overflow-x: hidden;
+  cursor: none;
+  -webkit-font-smoothing: antialiased;
+}
 
-        /* --- CINEMA MODE BACKDROP --- */
-        #cinema-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); 
-            z-index: 1000; 
-            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
-            backdrop-filter: blur(8px);
-        }
-        body.card-focused #cinema-overlay { opacity: 1; pointer-events: auto; }
+/* ── CURSOR ── */
+#cur {
+  position: fixed; pointer-events: none; z-index: 99999;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green2);
+  transform: translate(-50%,-50%);
+  transition: width .25s, height .25s, background .25s;
+}
+#cur2 {
+  position: fixed; pointer-events: none; z-index: 99998;
+  width: 32px; height: 32px;
+  border: 1px solid rgba(140,180,90,0.25);
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+  transition: width .3s, height .3s;
+}
+body.h #cur { width: 5px; height: 5px; }
+body.h #cur2 { width: 52px; height: 52px; border-color: rgba(140,180,90,0.4); }
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-void); }
-        ::-webkit-scrollbar-thumb { background: var(--accent-amber); border-radius: 3px; }
+/* ── PROGRESS ── */
+#prog {
+  position: fixed; top:0; left:0; height: 1px;
+  width: 0%; z-index: 8000;
+  background: linear-gradient(90deg, rgba(140,180,90,0.4), rgba(140,180,90,0.8));
+}
 
-        /* --- PARTICLES & FX --- */
-        #canvas-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; opacity: 0.3;
-        }
-        
-        .vignette {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, var(--bg-void) 90%);
-            z-index: -1; pointer-events: none;
-        }
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 2px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(140,180,90,0.2); }
 
-        /* --- CUSTOM GOLD CURSOR --- */
-        #cursor {
-            position: fixed; width: 20px; height: 20px;
-            border: 1px solid var(--accent-gold); border-radius: 50%;
-            transform: translate(-50%, -50%); pointer-events: none; z-index: 9999;
-            transition: width 0.2s, height 0.2s, background 0.2s; mix-blend-mode: exclusion;
-        }
-        #cursor-dot {
-            position: fixed; width: 4px; height: 4px; background: var(--accent-gold);
-            border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 9999;
-        }
+/* ── REVEAL ── */
+.r { opacity:0; transform:translateY(22px); transition: opacity 1s ease, transform 1s ease; }
+.r.in { opacity:1; transform:none; }
+.r.d1{transition-delay:.12s} .r.d2{transition-delay:.24s} .r.d3{transition-delay:.36s}
 
-        /* --- LAYOUT --- */
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-        
-        section { 
-            padding: 5rem 0; opacity: 0; transform: translateY(20px); 
-            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); 
-        }
-        
-        /* Reset transform on visible to fix stacking context issues */
-        section.visible { opacity: 1; transform: none; }
+/* ════════════════════════════════════════
+   HERO
+════════════════════════════════════════ */
+#hero {
+  min-height: 100vh;
+  padding: 0 8vw 5rem;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  position: relative; overflow: hidden;
+}
 
-        h1, h2, h3 { font-family: var(--font-head); color: #fff; letter-spacing: -0.02em; }
-        
-        h2 { 
-            font-size: 2.5rem; margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem;
-            background: linear-gradient(to right, #fff, var(--accent-gold));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        h2::after {
-            content: ''; height: 1px; flex-grow: 1; 
-            background: linear-gradient(90deg, var(--accent-gold), transparent);
-        }
+/* ambient glow */
+#hero::before {
+  content: '';
+  position: absolute; top: -10%; right: -8%;
+  width: 60vw; height: 60vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(120,160,70,0.055) 0%, transparent 65%);
+  pointer-events: none;
+}
+#hero::after {
+  content: '';
+  position: absolute; bottom: 0; left: -5%;
+  width: 40vw; height: 40vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(80,120,50,0.04) 0%, transparent 65%);
+  pointer-events: none;
+}
 
-        /* --- HERO --- */
-        .hero { 
-            min-height: 100vh; display: flex; align-items: center; justify-content: center; 
-            text-align: center; position: relative;
-        }
+.hero-eyebrow {
+  font-family: var(--f-mono);
+  font-size: .63rem; font-weight: 300; letter-spacing: .45em;
+  text-transform: uppercase; color: var(--dim);
+  margin-bottom: 3rem;
+  opacity: 0; animation: fadein 1.2s ease .3s forwards;
+}
 
-        .glitch {
-            font-size: 5rem; font-weight: 700; position: relative;
-            text-shadow: 2px 2px var(--accent-orange), -2px -2px #333;
-            animation: glitch 4s infinite alternate;
-            line-height: 1.1; margin-bottom: 1.5rem;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.5rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 2rem auto;
-            line-height: 1.6; min-height: 3.2em;
-        }
+.hero-name {
+  font-family: var(--f-serif);
+  font-weight: 100; font-style: italic;
+  font-size: clamp(5rem, 13vw, 14rem);
+  line-height: .86; letter-spacing: -.03em;
+  color: var(--white);
+  margin-bottom: 3.5rem;
+  opacity: 0; animation: fadein 1.4s cubic-bezier(.16,1,.3,1) .1s forwards;
+}
+.hero-name .green { color: var(--green2); font-style: italic; }
 
-        /* TYPING EFFECT STYLING */
-        #typed-text {
-            color: var(--accent-gold);
-            font-weight: 600;
-        }
+.hero-rule {
+  width: 0; height: 1px;
+  background: var(--border2);
+  margin-bottom: 2.5rem;
+  animation: grow 1.4s ease .7s forwards;
+}
+@keyframes grow { to { width: 100%; } }
 
-        .typing-cursor {
-            display: inline-block; width: 2px; height: 1.2em; background-color: var(--accent-gold);
-            animation: blink 1s step-end infinite; vertical-align: middle;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
+.hero-bottom {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  opacity: 0; animation: fadein 1s ease 1s forwards;
+  flex-wrap: wrap; gap: 2rem;
+}
 
-        .hero-tags {
-            font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.9rem;
-            margin-bottom: 2rem; letter-spacing: 2px;
-            border: 1px solid var(--glass-border); display: inline-block; padding: 8px 16px; border-radius: 20px;
-        }
+.hero-roles { display: flex; flex-direction: column; gap: .35rem; }
+.hero-role {
+  font-size: clamp(.85rem, 1.4vw, 1.1rem);
+  font-weight: 100; font-style: italic;
+  color: var(--muted); letter-spacing: .01em;
+}
 
-        @keyframes glitch {
-            0% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
-            25% { text-shadow: -2px 2px #333, 2px -2px var(--accent-orange); }
-            50% { text-shadow: 2px -2px var(--accent-orange), -2px 2px #333; }
-            100% { text-shadow: 2px 2px var(--accent-orange), -2px -2px #333; }
-        }
+.hero-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1.5rem; }
+.hero-links { display: flex; gap: 2rem; }
+.hero-link {
+  font-family: var(--f-mono); font-size: .6rem; font-weight: 300;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--dim); text-decoration: none; transition: color .3s;
+}
+.hero-link:hover { color: var(--green2); }
 
-        /* --- TIMELINE --- */
-        .timeline { position: relative; padding-left: 2rem; border-left: 1px solid var(--glass-border); }
-        .timeline-item { position: relative; margin-bottom: 3rem; transition: transform 0.3s; }
-        .timeline-item:last-child { margin-bottom: 0; }
-        
-        .timeline-item::before {
-            content: ''; position: absolute; left: -2.35rem; top: 5px;
-            width: 10px; height: 10px; background: var(--bg-void);
-            border: 2px solid var(--accent-gold); border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-gold); transition: all 0.3s;
-        }
-        
-        .timeline-item:hover { transform: translateX(10px); }
-        .timeline-item:hover::before { background: var(--accent-gold); box-shadow: 0 0 20px var(--accent-gold); transform: scale(1.3); }
+@keyframes fadein { to { opacity:1; transform:translateY(0); } }
 
-        .timeline-date { 
-            font-family: var(--font-mono); color: var(--accent-gold); font-size: 0.85rem; 
-            margin-bottom: 0.5rem; letter-spacing: 1px;
-        }
-        .timeline-content h3 { font-size: 1.4rem; margin-bottom: 0.2rem; color: #fff; }
-        .timeline-content h4 { color: var(--accent-orange); font-weight: 500; margin-bottom: 0.5rem; font-size: 1rem; }
-        .timeline-content ul { list-style: none; color: var(--text-muted); font-size: 0.95rem; }
-        .timeline-content li { margin-bottom: 0.5rem; }
-        .timeline-content li::before { content: '▹'; color: var(--accent-gold); margin-right: 0.5rem; }
-        .timeline-content p { color: var(--text-muted); font-size: 0.95rem; }
+/* ════════════════════════════════════════
+   LAYOUT
+════════════════════════════════════════ */
+main { max-width: 1200px; margin: 0 auto; padding: 0 8vw; }
 
-        /* --- CLICK-TO-FOCUS PROJECT CARDS --- */
-        .grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; transition: filter 0.3s; }
-        .grid-half { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
-        
-        /* Blur State (applied by JS) */
-        body.card-focused .card:not(.focused) {
-            filter: blur(5px) grayscale(100%);
-            opacity: 0.3;
-            pointer-events: none;
-        }
+/* ── CHAPTER ── */
+.chapter {
+  padding: 7rem 0 5rem;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 0 6rem;
+}
+.ch-aside { padding-top: .3rem; }
+.ch-num {
+  font-family: var(--f-mono); font-size: .6rem; font-weight: 300;
+  letter-spacing: .3em; color: var(--dim); margin-bottom: .4rem;
+}
+.ch-label {
+  font-family: var(--f-serif); font-weight: 100; font-style: italic;
+  font-size: 1.05rem; color: var(--muted); line-height: 1.3;
+}
 
-        .card {
-            background: linear-gradient(145deg, #0d0d0d, #050505);
-            border: 1px solid var(--glass-border);
-            padding: 2.5rem; border-radius: 12px; position: relative; overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            cursor: pointer;
-            z-index: 1; /* Default Z-index */
-        }
-        
-        .card:hover { 
-            transform: translateY(-5px); 
-            border-color: var(--accent-gold);
-            box-shadow: 0 10px 40px -10px rgba(255, 215, 0, 0.1); 
-        }
+/* ── ENTRY ── */
+.entry {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.entry:first-child { padding-top: 0; }
+.entry:last-child { border-bottom: none; padding-bottom: 0; }
 
-        /* FOCUSED STATE: Pops up significantly above overlay */
-        .card.focused {
-            transform: scale(1.1);
-            z-index: 2000; /* Much higher than overlay (1000) */
-            border-color: var(--accent-orange);
-            box-shadow: 0 0 60px rgba(251, 133, 0, 0.3);
-            background: #000; /* Ensure opaque background */
-            cursor: zoom-out;
-        }
-        
-        .card::before {
-            content: ""; position: absolute; top: var(--y); left: var(--x);
-            width: 600px; height: 600px; 
-            background: radial-gradient(circle, rgba(255, 215, 0, 0.08), transparent 60%);
-            transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.5s; 
-            pointer-events: none; z-index: 1;
-        }
-        .card:hover::before { opacity: 1; }
+.e-meta { display: flex; align-items: baseline; gap: 1.5rem; margin-bottom: .9rem; }
+.e-date {
+  font-family: var(--f-mono); font-size: .6rem; font-weight: 300;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--dim); white-space: nowrap;
+}
+.e-org {
+  font-family: var(--f-serif); font-size: .88rem; font-style: italic;
+  color: var(--green); font-weight: 100;
+}
 
-        .card-content { position: relative; z-index: 2; }
-        .card-head { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; }
-        .card-head h3 { font-size: 1.5rem; color: var(--text-main); }
-        .card-head a { color: var(--text-muted); font-size: 1.2rem; transition: color 0.3s; margin-left: 10px; }
-        .card-head a:hover { color: var(--accent-gold); }
-        .card-desc { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
-        .card-highlight { color: #fff; font-weight: 600; }
+.e-role {
+  font-family: var(--f-serif); font-weight: 200; font-style: italic;
+  font-size: clamp(1.6rem, 3vw, 2.8rem);
+  color: var(--white); line-height: .95; letter-spacing: -.01em;
+  margin-bottom: 1.2rem;
+}
 
-        .tech-stack { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: auto; }
-        .tech-tag { 
-            font-size: 0.75rem; padding: 5px 12px; border-radius: 100px; 
-            background: rgba(255, 215, 0, 0.05); color: var(--accent-gold); border: 1px solid rgba(255, 215, 0, 0.2);
-            font-family: var(--font-mono);
-        }
+.e-body {
+  font-size: .82rem; font-weight: 200;
+  color: rgba(220,210,185,0.82);
+  max-width: 660px; margin-bottom: 1.2rem;
+  list-style: none;
+}
+.e-body li { padding-left: 1.2rem; position: relative; margin-bottom: .25rem; }
+.e-body li::before {
+  content: '';
+  position: absolute; left: 0; top: .75em;
+  width: 6px; height: 1px;
+  background: rgba(140,180,90,0.4);
+}
 
-        /* --- SKILL PULSE MICRO-INTERACTION --- */
-        @keyframes skill-pulse {
-            0% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); border-color: rgba(255,255,255,0.1); }
-            50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); border-color: var(--accent-gold); }
-            100% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); border-color: rgba(255,255,255,0.1); }
-        }
+.chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+.chip {
+  font-family: var(--f-mono); font-size: .58rem; font-weight: 300;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--dim);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  transition: color .25s, border-color .25s;
+}
+.chip:hover { color: var(--green2); border-color: rgba(140,180,90,0.3); }
 
-        .skill-section { margin-bottom: 2.5rem; }
-        .skill-title { 
-            font-family: var(--font-mono); color: var(--accent-orange); 
-            margin-bottom: 1rem; display: block; font-size: 0.9rem; letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px;
-        }
-        .skill-list { display: flex; flex-wrap: wrap; gap: 1rem; }
-        .skill-pill {
-            padding: 8px 16px; background: #0f0f0f; border: 1px solid #222;
-            border-radius: 4px; transition: 0.3s; display: flex; align-items: center; gap: 8px;
-            color: var(--text-muted); font-size: 0.85rem; font-family: var(--font-mono);
-        }
-        .skill-pill i { color: var(--accent-gold); }
-        
-        .skill-pill:hover { 
-            color: #fff; transform: translateY(-2px); 
-            background: rgba(255, 215, 0, 0.05);
-            animation: skill-pulse 1.5s infinite;
-        }
+/* ── PROJECTS ── */
+.proj-entry {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 0 3rem; align-items: start;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: padding-left .35s;
+}
+.proj-entry:first-child { padding-top: 0; }
+.proj-entry:last-child { border-bottom: none; }
+.proj-entry:hover { padding-left: 1.2rem; }
 
-        /* --- COURSEWORK --- */
-        .course-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;
-        }
-        .course-card {
-            background: var(--bg-card); border-left: 2px solid var(--accent-amber);
-            padding: 1rem 1.5rem; border-radius: 0 4px 4px 0;
-            transition: 0.3s;
-        }
-        .course-card:hover { background: #111; border-left-color: var(--accent-gold); padding-left: 2rem; }
-        .course-title { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
-        .course-card:hover .course-title { color: #fff; }
+.proj-idx {
+  font-family: var(--f-mono); font-size: .58rem; font-weight: 300;
+  letter-spacing: .25em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: .6rem;
+}
+.proj-name {
+  font-family: var(--f-serif); font-weight: 200; font-style: italic;
+  font-size: clamp(1.5rem, 2.8vw, 2.4rem);
+  color: var(--white); line-height: .95; letter-spacing: -.01em;
+  margin-bottom: .75rem;
+}
+.proj-desc {
+  font-size: .8rem; font-weight: 200;
+  color: rgba(220,210,185,0.78);
+  max-width: 580px; margin-bottom: 1rem;
+  list-style: none;
+}
+.proj-desc li { padding-left: 1rem; position: relative; margin-bottom: .2rem; }
+.proj-desc li::before { content:''; position:absolute; left:0; top:.75em; width:5px; height:1px; background:rgba(140,180,90,0.3); }
 
-        /* --- CONTACT --- */
-        .social-bar { display: flex; gap: 2rem; justify-content: center; margin-top: 3rem; }
-        .social-btn {
-            font-size: 1.5rem; color: var(--text-muted); transition: 0.3s;
-        }
-        .social-btn:hover { color: var(--accent-gold); transform: scale(1.1); text-shadow: 0 0 10px var(--accent-gold); }
+.proj-right { flex-shrink: 0; text-align: right; padding-top: .2rem; }
+.proj-stat {
+  font-family: var(--f-serif); font-weight: 100; font-style: italic;
+  font-size: clamp(2.5rem, 5.5vw, 6rem);
+  color: rgba(140,180,90,0.12);
+  line-height: 1; letter-spacing: -.03em; white-space: nowrap;
+}
+.proj-stat-hi {
+  font-family: var(--f-serif); font-weight: 100; font-style: italic;
+  font-size: clamp(3rem, 6vw, 7rem);
+  color: var(--green);
+  line-height: 1; letter-spacing: -.03em; white-space: nowrap;
+}
+.proj-stat-l {
+  font-family: var(--f-mono); font-size: .55rem; font-weight: 300;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--dim); white-space: nowrap; margin-top: .2rem;
+}
+.proj-link {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--f-mono); font-size: .6rem; font-weight: 300;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--dim); text-decoration: none;
+  margin-top: .8rem;
+  transition: color .25s, gap .2s;
+}
+.proj-link::after { content: '↗'; }
+.proj-link:hover { color: var(--green2); gap: .65rem; }
 
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .glitch { font-size: 3rem; }
-            h2 { font-size: 2rem; }
-            .grid-half { grid-template-columns: 1fr; }
-        }
-    </style>
+/* ── SKILLS ── */
+.sk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem 6rem; }
+.sk-group-title {
+  font-family: var(--f-mono); font-size: .58rem; font-weight: 300;
+  letter-spacing: .3em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 1rem; padding-bottom: .7rem;
+  border-bottom: 1px solid var(--border);
+}
+.sk-item {
+  font-family: var(--f-serif); font-weight: 200; font-style: italic;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  color: rgba(220,210,185,0.2);
+  padding: .3rem 0 .3rem .6rem;
+  border-bottom: 1px solid rgba(180,160,100,0.04);
+  border-left: 2px solid transparent;
+  transition: border-color .3s, color .3s, padding-left .25s;
+}
+.sk-item:hover { border-left-color: var(--green2); color: rgba(160,210,90,0.95); padding-left: 1rem; text-shadow: 0 0 20px rgba(140,180,90,0.3); }
+.sk-item:last-child { border-bottom: none; }
+
+/* ── COURSEWORK ── */
+.cw-item {
+  font-family: var(--f-serif); font-weight: 100; font-style: italic;
+  font-size: clamp(.95rem, 1.6vw, 1.3rem);
+  color: rgba(220,210,185,0.15);
+  padding: .28rem 0 .28rem .6rem;
+  border-bottom: 1px solid rgba(180,160,100,0.04);
+  border-left: 2px solid transparent;
+  transition: border-color .3s, color .3s, padding-left .2s;
+}
+.cw-item:hover { border-left-color: var(--green2); color: rgba(160,210,90,0.95); padding-left: 1rem; text-shadow: 0 0 20px rgba(140,180,90,0.3); }
+.cw-item:last-child { border-bottom: none; }
+
+/* ── ACHIEVEMENTS ── */
+.ach-entry {
+  display: grid; grid-template-columns: 100px 1fr;
+  gap: 0 3rem; padding: 2rem 0;
+  border-bottom: 1px solid var(--border); align-items: start;
+}
+.ach-entry:first-child { padding-top: 0; }
+.ach-entry:last-child { border-bottom: none; }
+.ach-yr {
+  font-family: var(--f-serif); font-weight: 100; font-style: italic;
+  font-size: 3rem; color: var(--dim); line-height: 1; letter-spacing: -.03em;
+}
+.ach-title {
+  font-family: var(--f-serif); font-weight: 200; font-style: italic;
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  color: var(--white); line-height: 1; margin-bottom: .3rem;
+}
+.ach-sub {
+  font-size: .78rem; font-weight: 200; font-style: italic;
+  color: var(--green); margin-bottom: .5rem;
+}
+.ach-desc {
+  font-size: .78rem; font-weight: 200;
+  color: rgba(220,210,185,0.78);
+}
+.ach-link {
+  font-family: var(--f-mono); font-size: .58rem; font-weight: 300;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--dim); text-decoration: none;
+  display: inline-flex; align-items: center; gap: .3rem;
+  transition: color .25s;
+}
+.ach-link::after { content: '↗'; }
+.ach-link:hover { color: var(--green2); }
+
+/* ── CONTACT ── */
+#contact-s {
+  border-top: 1px solid var(--border);
+  padding: 9rem 8vw 6rem;
+  position: relative; overflow: hidden;
+}
+#contact-s::before {
+  content: '';
+  position: absolute; top: -20%; right: -10%;
+  width: 50vw; height: 50vw; border-radius: 50%;
+  background: radial-gradient(circle, rgba(120,160,70,0.06), transparent 65%);
+  pointer-events: none;
+}
+.ct-hed {
+  font-family: var(--f-serif); font-weight: 100; font-style: italic;
+  font-size: clamp(5rem, 14vw, 16rem);
+  line-height: .86; letter-spacing: -.03em;
+  color: var(--white);
+  margin-bottom: 4rem;
+  user-select: none;
+}
+.ct-hed .green { color: var(--green); }
+
+.ct-links {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--border);
+  max-width: 1200px;
+}
+.cl {
+  padding: 2rem 2rem 2rem 0;
+  border-right: 1px solid var(--border);
+  text-decoration: none;
+  transition: padding-left .3s;
+}
+.cl:last-child { border-right: none; }
+.cl:hover { padding-left: .8rem; }
+.cl-l {
+  font-family: var(--f-mono); font-size: .57rem; font-weight: 300;
+  letter-spacing: .25em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: .6rem;
+}
+.cl-r {
+  font-family: var(--f-serif); font-weight: 200; font-style: italic;
+  font-size: clamp(.95rem, 1.6vw, 1.3rem);
+  color: var(--muted); line-height: 1.2;
+  transition: color .3s;
+}
+.cl:hover .cl-r { color: var(--green2); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 8vw;
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 1200px; margin: 0 auto;
+}
+.foot-l, .foot-r {
+  font-family: var(--f-mono); font-size: .58rem; font-weight: 300;
+  letter-spacing: .15em; color: var(--dim);
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .chapter { grid-template-columns: 1fr; gap: 1.5rem; }
+  .ct-links { grid-template-columns: 1fr 1fr; }
+  .sk-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .proj-entry { grid-template-columns: 1fr; }
+  .proj-right { text-align: left; }
+}
+@media(max-width:580px){
+  #hero { padding: 0 6vw 4rem; }
+  main { padding: 0 6vw; }
+  .hero-bottom { flex-direction: column; align-items: flex-start; }
+  .hero-right { align-items: flex-start; }
+  .ct-links { grid-template-columns: 1fr; }
+  .ach-entry { grid-template-columns: 1fr; gap: .4rem; }
+  footer { flex-direction: column; gap: .4rem; text-align: center; }
+  #contact-s { padding: 6rem 6vw 4rem; }
+}
+</style>
 </head>
 <body>
 
-    <div id="progress-bar"></div>
-    
-    <div id="cinema-overlay"></div>
+<div id="prog"></div>
+<div id="cur"></div>
+<div id="cur2"></div>
 
-    <div id="cursor"></div>
-    <div id="cursor-dot"></div>
-    <canvas id="canvas-bg"></canvas>
-    <div class="vignette"></div>
+<!-- ══════════ HERO ══════════ -->
+<section id="hero">
+  <div class="hero-eyebrow">Portfolio · Debarshi Chakraborty · 2026</div>
 
-    <div class="container">
-        
-        <section class="hero visible">
-            <div>
-                <div class="hero-tags">&lt; SYSTEM.INIT /&gt;</div>
-                <h1 class="glitch">DEBARSHI<br>CHAKRABORTY</h1>
-                
-                <p class="hero-subtitle">
-                    <span id="typed-text"></span><span class="typing-cursor"></span><br>
-                    Researching <strong>Financial Time-Series Forecasting</strong> using <strong>GNNs & Hypergraphs</strong>.
-                </p>
+  <h1 class="hero-name">
+    Debarshi<br>
+    <span class="green">Chakraborty</span>
+  </h1>
 
-                <div class="social-bar">
-                    <a href="mailto:debarshi2933@gmail.com" class="social-btn"><i class="fas fa-envelope"></i></a>
-                    <a href="https://github.com/debarshi29" class="social-btn"><i class="fab fa-github"></i></a>
-                    <a href="https://linkedin.com/in/debarshi29" class="social-btn"><i class="fab fa-linkedin"></i></a>
-                    <a href="resume.pdf" class="social-btn" title="Resume"><i class="fas fa-file-alt"></i></a>
-                </div>
-            </div>
-        </section>
+  <div class="hero-rule"></div>
 
-        <section id="experience">
-            <h2>Experience</h2>
-            <div class="timeline">
-                
-                <div class="timeline-item">
-                    <div class="timeline-date">Jan 2026 - Present</div>
-                    <div class="timeline-content">
-                        <h3>AI/ML Engineering Intern</h3>
-                        <h4>Rezolve AI</h4>
-                            <ul>
-                                <li>Designed and deployed a model-agnostic conversational AI architecture for enterprise retail, decoupling LangGraph agentic workflows from hardcoded LLM providers via a centralized model registry — enabling zero-downtime model swaps across production environments.</li>
-                                <li>Led MCP (Model Context Protocol) server implementation and Agent-to-Agent (A2A) tool migration, exposing product interaction capabilities as modular, reusable services within a multi-agent conversational platform.</li>
-                                <li>Drove MLOps improvements by centralizing LLM prompt management in Langfuse for full observability and traceability, and migrating inference workloads to Azure OpenAI for enterprise-grade scalability.</li>
-                                <li>Diagnosed and resolved critical production bugs across the conversational AI pipeline including multimodal input failures, stateful cart management errors, and broken agentic payment flows  improving system reliability across live retail deployments.</li>
-                            </ul>
-                        </div>
-                    </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">May 2025 - July 2025</div>
-                    <div class="timeline-content">
-                        <h3>Summer Research Intern</h3>
-                        <h4>Indian Institute of Technology, Guwahati</h4>
-                        <ul>
-                            <li>Collaborated with PhD researchers on the <strong>Popular Matching Problem</strong> in subcubic graphs.</li>
-                            <li>Designed greedy-based algorithms and implemented prototypes in Python.</li>
-                            <li>Gained hands-on experience in complexity analysis and graph theory.</li>
-                        </ul>
-                    </div>
-                </div>
+  <div class="hero-bottom">
+    <div class="hero-roles">
+      <div class="hero-role">GenAI Engineer</div>
+      <div class="hero-role">Distributed Systems Builder</div>
+      <div class="hero-role">ML Research Enthusiast</div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-links">
+        <a href="mailto:debarshi2933@gmail.com" class="hero-link">Email</a>
+        <a href="https://github.com/debarshi29" target="_blank" class="hero-link">GitHub</a>
+        <a href="https://linkedin.com/in/debarshi29" target="_blank" class="hero-link">LinkedIn</a>
+        <a href="resume.pdf" class="hero-link">Résumé</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-            </div>
-        </section>
+<main>
 
-        <section id="education">
-            <h2>Education</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">July 2024 - Present</div>
-                    <div class="timeline-content">
-                        <h3>M.Sc. in Big Data Analytics</h3>
-                        <h4>Ramakrishna Mission Vivekananda Educational and Research Institute</h4>
-                        <p>Focusing on Distributed Computing, Machine Learning, and Advanced Algorithms.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">Sept 2021 - June 2024</div>
-                    <div class="timeline-content">
-                        <h3>B.Sc. in Mathematics (Honors)</h3>
-                        <h4>Ramakrishna Mission Vivekananda Centenary College</h4>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="projects">
-            <h2>Selected Projects</h2>
-            <div class="grid">
-
-                <div class="card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
-                    <div class="card-content">
-                        <div class="card-head">
-                            <h3>Real-Time (T+0) Trade Settlement</h3>
-                            <div class="card-icons">
-                                <a href="https://github.com/debarshi29/Real-Time-Trade-Settlement-for-the-US-Market" target="_blank"><i class="fab fa-github"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-desc">
-                            <p>
-                                An end-to-end institutional settlement system. The core innovation utilizes <strong>Agentic AI</strong> for semantic trade validation and real-time anomaly detection.
-                            </p>
-                            <ul style="margin-top: 10px; margin-left: 20px; list-style-type: square;">
-                                <li><strong>Infrastructure:</strong> Architected a 4-node consensus network using IBFT-2 to guarantee deterministic settlement finality.</li>
-                                <li><strong>Agentic AI:</strong> State-Based LangGraph agents (Llama 3.2) for pre-trade compliance.</li>
-                                <li><strong>ML Security:</strong> Random Forest & XGBoost engines for real-time fraud detection.</li>
-                                <li><strong>Explainable AI:</strong> Used SHAP and LIME to justify model decisions.</li>
-                                <li><strong>Impact:</strong> Achieved <strong>91.7% reduction</strong> in counterparty risk.</li>
-                            </ul>
-                        </div>
-                        <div class="tech-stack">
-                            <span class="tech-tag">Agentic AI</span>
-                            <span class="tech-tag">Hyperledger Besu</span>
-                            <span class="tech-tag">Fraud Detection</span>
-                            <span class="tech-tag">XAI</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
-                    <div class="card-content">
-                        <div class="card-head">
-                            <h3>NET-LINK: Self-Healing Drone Swarms</h3>
-                            <div class="card-icons">
-                                <a href="https://github.com/debarshi29/Deep-Reinforcement-Learning-DA346/tree/main/DRL_Final%20Project" target="_blank"><i class="fab fa-github"></i></a>
-                            </div>
-                        </div>
-                        <div class="card-desc">
-                            <p>
-                                A multi-agent Deep Reinforcement Learning framework for autonomous communication relays. Five agents coordinate to maintain connectivity under physics/energy constraints using MAPPO.
-                            </p>
-                        </div>
-                        <div class="tech-stack">
-                            <span class="tech-tag">Deep RL</span>
-                            <span class="tech-tag">MARL</span>
-                            <span class="tech-tag">MAPPO</span>
-                            <span class="tech-tag">PyTorch</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-half">
-                    <div class="card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
-                        <div class="card-content">
-                            <div class="card-head">
-                                <h3>Deep Learning Document Intelligence</h3>
-                                <a href="https://github.com/debarshi29/Deep-Learning-based-Document-Summarization-and-Question-Answering" target="_blank"><i class="fab fa-github"></i></a>
-                            </div>
-                            <div class="card-desc">
-                                GRU-based Seq2Seq model for summarization and fine-tuned <strong>DistilBERT</strong> for extractive QA.
-                            </div>
-                            <div class="tech-stack">
-                                <span class="tech-tag">NLP</span>
-                                <span class="tech-tag">DistilBERT</span>
-                                <span class="tech-tag">Transformers</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
-                        <div class="card-content">
-                            <div class="card-head">
-                                <h3>Distributed LLM Inference Engine</h3>
-                                <a href="https://github.com/debarshi29/Distributed-Large-Language-Models" target="_blank"><i class="fab fa-github"></i></a>
-                            </div>
-                            <div class="card-desc">
-                                Distributed inference cluster for <strong>DeepSeek R1</strong> and <strong>Llama 3.2B</strong> using model parallelism, increasing throughput speed by 2-4x.
-                            </div>
-                            <div class="tech-stack">
-                                <span class="tech-tag">C++</span>
-                                <span class="tech-tag">Python</span>
-                                <span class="tech-tag">CUDA</span>
-                                <span class="tech-tag">Distributed Computing</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
-                        <div class="card-content">
-                            <div class="card-head">
-                                <h3>Neural US Equity Option Pricing</h3>
-                                <a href="#"><i class="fas fa-chart-line"></i></a>
-                            </div>
-                            <div class="card-desc">
-                                Directional Classification model for high-frequency option pricing, achieving <strong>60.39% accuracy</strong> in noisy markets.
-                            </div>
-                            <div class="tech-stack">
-                                <span class="tech-tag">LSTM</span>
-                                <span class="tech-tag">Quant Finance</span>
-                                <span class="tech-tag">Time Series</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card" onclick="toggleFocus(this)" onmousemove="moveGlow(event)">
-                        <div class="card-content">
-                            <div class="card-head">
-                                <h3>FHE-BERT-Tiny</h3>
-                                <a href="#"><i class="fas fa-shield-alt"></i></a>
-                            </div>
-                            <div class="card-desc">
-                                Privacy-preserving Transformer inference using Homomorphic Encryption for BERT-Tiny.
-                            </div>
-                            <div class="tech-stack">
-                                <span class="tech-tag">Cryptography</span>
-                                <span class="tech-tag">C++</span>
-                                <span class="tech-tag">FHE</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <section id="achievements">
-            <h2>Achievements</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">2025</div>
-                    <div class="timeline-content">
-                        <h3>IEEE WCONF Publication</h3>
-                        <h4>Real Time Trade Settlement for the US Market</h4>
-                        <p>Published in the 3rd World Conference on Communication & Computing.</p>
-                        <a href="https://doi.org/10.1109/WCONF64849.2025.11233239" target="_blank" style="color: var(--accent-gold); text-decoration: none; font-size: 0.9rem;">
-                            <i class="fas fa-external-link-alt"></i> View DOI
-                        </a>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-date">2024</div>
-                    <div class="timeline-content">
-                        <h3>Qualified IIT JAM</h3>
-                        <h4>Mathematics</h4>
-                        <p>Conducted by IIT Madras. Demonstrated proficiency in advanced mathematics securing eligibility for master's programs.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="volunteering">
-            <h2>Volunteering</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">Perceptron 26</div>
-                    <div class="timeline-content">
-                        <h3>Event Lead: CodeCraft</h3>
-                        <h4>RKMVERI Annual Tech Fest</h4>
-                        <p>Spearheaded the flagship Hackathon "CodeCraft", managing logistics, problem statements, and participant coordination.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="skills">
-            <h2>Technical Arsenal</h2>
-            
-            <div class="skill-section">
-                <span class="skill-title">LANGUAGES & CORE</span>
-                <div class="skill-list">
-                    <div class="skill-pill"><i class="fab fa-java"></i> Java</div>
-                    <div class="skill-pill"><i class="fab fa-python"></i> Python</div>
-                    <div class="skill-pill"><i class="fas fa-database"></i> SQL</div>
-                    <div class="skill-pill"><i class="fas fa-code"></i> Data Structures</div>
-                </div>
-            </div>
-
-            <div class="skill-section">
-                <span class="skill-title">DATA PROCESSING & ENGINEERING</span>
-                <div class="skill-list">
-                    <div class="skill-pill"><i class="fas fa-table"></i> Pandas</div>
-                    <div class="skill-pill"><i class="fas fa-bolt"></i> Polars</div>
-                    <div class="skill-pill"><i class="fas fa-calculator"></i> NumPy</div>
-                    <div class="skill-pill"><i class="fas fa-fire"></i> PySpark</div>
-                    <div class="skill-pill"><i class="fas fa-network-wired"></i> Dask</div>
-                </div>
-            </div>
-
-            <div class="skill-section">
-                <span class="skill-title">AI, ML & GRAPH</span>
-                <div class="skill-list">
-                    <div class="skill-pill"><i class="fas fa-brain"></i> PyTorch</div>
-                    <div class="skill-pill"><i class="fas fa-chart-bar"></i> Scikit-Learn</div>
-                    <div class="skill-pill"><i class="fas fa-gamepad"></i> OpenAI Gym</div>
-                    <div class="skill-pill"><i class="fas fa-eye"></i> OpenCV</div>
-                    <div class="skill-pill"><i class="fas fa-project-diagram"></i> LangGraph</div>
-                    <div class="skill-pill"><i class="fas fa-share-alt"></i> Graph Neural Networks</div>
-                </div>
-            </div>
-
-            <div class="skill-section">
-                <span class="skill-title">WEB, SERVING & MLOPS</span>
-                <div class="skill-list">
-                    <div class="skill-pill"><i class="fas fa-server"></i> FastAPI</div>
-                    <div class="skill-pill"><i class="fab fa-python"></i> Django</div>
-                    <div class="skill-pill"><i class="fas fa-flask"></i> Flask</div>
-                    <div class="skill-pill"><i class="fas fa-stream"></i> Streamlit</div>
-                    <div class="skill-pill"><i class="fab fa-docker"></i> Docker</div>
-                </div>
-            </div>
-            
-            <div class="skill-section">
-                <span class="skill-title">VECTOR DB & RAG</span>
-                <div class="skill-list">
-                    <div class="skill-pill"><i class="fas fa-search"></i> Qdrant</div>
-                    <div class="skill-pill"><i class="fas fa-cube"></i> Weaviate</div>
-                    <div class="skill-pill"><i class="fas fa-link"></i> LangChain</div>
-                </div>
-            </div>
-        </section>
-
-        <section id="coursework">
-            <h2>Academic Coursework</h2>
-            <div class="course-grid">
-                <div class="course-card"><div class="course-title">Data Structures & Algorithms</div></div>
-                <div class="course-card"><div class="course-title">Java & Hadoop Ecosystem</div></div>
-                <div class="course-card"><div class="course-title">Database Management Systems</div></div>
-                <div class="course-card"><div class="course-title">Machine Learning</div></div>
-                <div class="course-card"><div class="course-title">Deep Learning & NLP</div></div>
-                <div class="course-card"><div class="course-title">Deep Learning for Cyber Security</div></div>
-                <div class="course-card"><div class="course-title">Deep Reinforcement Learning</div></div>
-                <div class="course-card"><div class="course-title">Time Series Analysis</div></div>
-                <div class="course-card"><div class="course-title">Graph DBs & Distributed Computing</div></div>
-                <div class="course-card"><div class="course-title">Probability & Stochastic Processes</div></div>
-                <div class="course-card"><div class="course-title">Multivariate Statistics</div></div>
-                <div class="course-card"><div class="course-title">Linear Algebra</div></div>
-                <div class="course-card"><div class="course-title">Multivariate Calculus</div></div>
-            </div>
-        </section>
-
-        <section style="text-align: center; padding: 4rem 0;">
-            <p style="color: var(--text-muted); font-size: 0.9rem;">
-                &copy; 2026 Debarshi Chakraborty. <span style="color: var(--accent-gold)">System Online.</span>
-            </p>
-        </section>
-
+<!-- EXPERIENCE -->
+<div class="chapter r">
+  <div class="ch-aside">
+    <div class="ch-num">01</div>
+    <div class="ch-label">Experience</div>
+  </div>
+  <div class="ch-body">
+    <div class="entry">
+      <div class="e-meta">
+        <span class="e-date">Jan 2026 — Present</span>
+        <span class="e-org">Rezolve AI</span>
+      </div>
+      <div class="e-role">AI / ML Engineering Intern</div>
+      <ul class="e-body">
+        <li>Designed and deployed a model-agnostic conversational AI architecture for enterprise retail, decoupling LangGraph agentic workflows from hardcoded LLM providers via a centralized model registry — enabling zero-downtime model swaps across production environments.</li>
+        <li>Led MCP (Model Context Protocol) server implementation and Agent-to-Agent (A2A) tool migration, exposing product interaction capabilities as modular, reusable services within a multi-agent conversational platform.</li>
+        <li>Drove MLOps improvements by centralizing LLM prompt management in Langfuse for full observability and traceability, and migrating inference workloads to Azure OpenAI for enterprise-grade scalability.</li>
+        <li>Diagnosed and resolved critical production bugs across the conversational AI pipeline including multimodal input failures, stateful cart management errors, and broken agentic payment flows.</li>
+      </ul>
+      <div class="chips">
+        <span class="chip">LangGraph</span><span class="chip">MCP</span><span class="chip">A2A Protocol</span>
+        <span class="chip">AKS / Kubernetes</span><span class="chip">Azure OpenAI</span><span class="chip">Langfuse</span>
+      </div>
     </div>
 
-    <script>
-        // --- SCROLL PROGRESS BAR ---
-        window.addEventListener('scroll', () => {
-            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const percent = (scrollTop / scrollHeight) * 100;
-            document.getElementById('progress-bar').style.width = percent + '%';
-        });
+    <div class="entry">
+      <div class="e-meta">
+        <span class="e-date">May 2025 — July 2025</span>
+        <span class="e-org">IIT Guwahati</span>
+      </div>
+      <div class="e-role">Summer Research Intern</div>
+      <ul class="e-body">
+        <li>Collaborated with PhD researchers on the Popular Matching Problem in subcubic graphs.</li>
+        <li>Designed greedy-based algorithms and implemented prototypes in Python.</li>
+        <li>Gained hands-on experience in complexity analysis and graph theory.</li>
+      </ul>
+      <div class="chips">
+        <span class="chip">Graph Algorithms</span><span class="chip">Complexity Analysis</span><span class="chip">Python</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // --- TYPING EFFECT ---
-        const textElement = document.getElementById('typed-text');
-        const roles = [
-            "GenAI Engineer",
-            "Distributed Systems Builder",
-            "ML Research Enthusiast"
-        ];
-        let roleIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
+<!-- EDUCATION -->
+<div class="chapter r">
+  <div class="ch-aside">
+    <div class="ch-num">02</div>
+    <div class="ch-label">Education</div>
+  </div>
+  <div class="ch-body">
+    <div class="entry">
+      <div class="e-meta">
+        <span class="e-date">July 2024 — Present</span>
+        <span class="e-org">RKMVERI</span>
+      </div>
+      <div class="e-role">M.Sc. in Big Data Analytics</div>
+      <div class="e-body" style="list-style:none;padding-left:0;">
+        Ramakrishna Mission Vivekananda Educational and Research Institute.<br>
+        Focusing on Distributed Computing, Machine Learning, and Advanced Algorithms.
+      </div>
+    </div>
+    <div class="entry">
+      <div class="e-meta">
+        <span class="e-date">Sept 2021 — June 2024</span>
+        <span class="e-org">RKM Vivekananda Centenary College</span>
+      </div>
+      <div class="e-role">B.Sc. Mathematics (Honors)</div>
+    </div>
+  </div>
+</div>
 
-        function type() {
-            const currentRole = roles[roleIndex];
-            
-            if (isDeleting) {
-                textElement.textContent = currentRole.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                textElement.textContent = currentRole.substring(0, charIndex + 1);
-                charIndex++;
-            }
+<!-- PROJECTS -->
+<div class="chapter r">
+  <div class="ch-aside">
+    <div class="ch-num">03</div>
+    <div class="ch-label">Selected Projects</div>
+  </div>
+  <div class="ch-body">
 
-            let typeSpeed = isDeleting ? 50 : 100;
+    <div class="proj-entry">
+      <div>
+        <div class="proj-idx">001 — IEEE Published · 2025</div>
+        <div class="proj-name">Real-Time (T+0)<br>Trade Settlement</div>
+        <ul class="proj-desc">
+          <li>Architected a 4-node consensus network using IBFT-2 to guarantee deterministic settlement finality.</li>
+          <li>State-Based LangGraph agents (Llama 3.2) for pre-trade compliance.</li>
+          <li>Random Forest &amp; XGBoost engines for real-time fraud detection.</li>
+          <li>Used SHAP and LIME to justify model decisions.</li>
+        </ul>
+        <div class="chips">
+          <span class="chip">Agentic AI</span><span class="chip">Hyperledger Besu</span>
+          <span class="chip">Fraud Detection</span><span class="chip">XAI</span>
+        </div>
+        <a href="https://github.com/debarshi29/Real-Time-Trade-Settlement-for-the-US-Market" target="_blank" class="proj-link">GitHub</a>
+      </div>
+      <div class="proj-right">
+        <div class="proj-stat-hi">91.7%</div>
+        <div class="proj-stat-l">Counterparty risk<br>reduction</div>
+      </div>
+    </div>
 
-            if (!isDeleting && charIndex === currentRole.length) {
-                typeSpeed = 2000; // Pause at end
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                roleIndex = (roleIndex + 1) % roles.length;
-                typeSpeed = 500; // Pause before new word
-            }
+    <div class="proj-entry">
+      <div>
+        <div class="proj-idx">002 — MARL</div>
+        <div class="proj-name">NET-LINK: Self-Healing<br>Drone Swarms</div>
+        <p class="proj-desc">A multi-agent Deep Reinforcement Learning framework for autonomous communication relays. Five agents coordinate to maintain connectivity under physics/energy constraints using MAPPO.</p>
+        <div class="chips">
+          <span class="chip">Deep RL</span><span class="chip">MARL</span><span class="chip">MAPPO</span><span class="chip">PyTorch</span>
+        </div>
+        <a href="https://github.com/debarshi29/Deep-Reinforcement-Learning-DA346/tree/main/DRL_Final%20Project" target="_blank" class="proj-link">GitHub</a>
+      </div>
+      <div class="proj-right">
+        <div class="proj-stat">5<br>Agents</div>
+      </div>
+    </div>
 
-            setTimeout(type, typeSpeed);
-        }
-        document.addEventListener('DOMContentLoaded', type);
+    <div class="proj-entry">
+      <div>
+        <div class="proj-idx">003 — NLP</div>
+        <div class="proj-name">Deep Learning<br>Document Intelligence</div>
+        <p class="proj-desc">GRU-based Seq2Seq model for summarization and fine-tuned DistilBERT for extractive QA.</p>
+        <div class="chips">
+          <span class="chip">NLP</span><span class="chip">DistilBERT</span><span class="chip">Transformers</span>
+        </div>
+        <a href="https://github.com/debarshi29/Deep-Learning-based-Document-Summarization-and-Question-Answering" target="_blank" class="proj-link">GitHub</a>
+      </div>
+      <div class="proj-right"></div>
+    </div>
 
-        // --- CLICK TO FOCUS CARD (Cinema Mode) ---
-        function toggleFocus(card) {
-            const body = document.body;
-            
-            if (card.classList.contains('focused')) {
-                // Unfocus
-                card.classList.remove('focused');
-                body.classList.remove('card-focused');
-            } else {
-                // Focus
-                document.querySelectorAll('.card').forEach(c => c.classList.remove('focused'));
-                card.classList.add('focused');
-                body.classList.add('card-focused');
-            }
-            event.stopPropagation();
-        }
+    <div class="proj-entry">
+      <div>
+        <div class="proj-idx">004 — Distributed Systems</div>
+        <div class="proj-name">Distributed LLM<br>Inference Engine</div>
+        <p class="proj-desc">Distributed inference cluster for DeepSeek R1 and Llama 3.2B using model parallelism, increasing throughput speed by 2–4×.</p>
+        <div class="chips">
+          <span class="chip">C++</span><span class="chip">Python</span><span class="chip">CUDA</span><span class="chip">Distributed Computing</span>
+        </div>
+        <a href="https://github.com/debarshi29/Distributed-Large-Language-Models" target="_blank" class="proj-link">GitHub</a>
+      </div>
+      <div class="proj-right">
+        <div class="proj-stat">2–4×</div>
+        <div class="proj-stat-l">Throughput</div>
+      </div>
+    </div>
 
-        // Close focus when clicking outside
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.card').forEach(c => c.classList.remove('focused'));
-            document.body.classList.remove('card-focused');
-        });
+    <div class="proj-entry">
+      <div>
+        <div class="proj-idx">005 — Quant Finance</div>
+        <div class="proj-name">Neural US Equity<br>Option Pricing</div>
+        <p class="proj-desc">Directional Classification model for high-frequency option pricing, achieving 60.39% accuracy in noisy markets.</p>
+        <div class="chips">
+          <span class="chip">LSTM</span><span class="chip">Quant Finance</span><span class="chip">Time Series</span>
+        </div>
+      </div>
+      <div class="proj-right">
+        <div class="proj-stat">60.4%</div>
+        <div class="proj-stat-l">Accuracy</div>
+      </div>
+    </div>
 
-        // --- CURSOR FOLLOWER ---
-        const cursor = document.getElementById('cursor');
-        const dot = document.getElementById('cursor-dot');
-        
-        document.addEventListener('mousemove', (e) => {
-            dot.style.left = e.clientX + 'px';
-            dot.style.top = e.clientY + 'px';
-            
-            setTimeout(() => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-            }, 50);
-        });
+    <div class="proj-entry">
+      <div>
+        <div class="proj-idx">006 — Cryptography</div>
+        <div class="proj-name">FHE-BERT-Tiny</div>
+        <p class="proj-desc">Privacy-preserving Transformer inference using Homomorphic Encryption for BERT-Tiny.</p>
+        <div class="chips">
+          <span class="chip">Cryptography</span><span class="chip">C++</span><span class="chip">FHE</span>
+        </div>
+      </div>
+      <div class="proj-right"></div>
+    </div>
 
-        // --- MOUSE GLOW ON CARDS ---
-        function moveGlow(e) {
-            const card = e.currentTarget;
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            card.style.setProperty('--x', `${x}px`);
-            card.style.setProperty('--y', `${y}px`);
-        }
+  </div>
+</div>
 
-        // --- SCROLL ANIMATION ---
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.1 });
+<!-- SKILLS -->
+<div class="chapter r">
+  <div class="ch-aside">
+    <div class="ch-num">04</div>
+    <div class="ch-label">Technical Arsenal</div>
+  </div>
+  <div class="ch-body">
+    <div class="sk-grid">
+      <div>
+        <div class="sk-group-title">Languages & Core</div>
+        <div class="sk-item">Java</div>
+        <div class="sk-item">Python</div>
+        <div class="sk-item">SQL</div>
+        <div class="sk-item">Data Structures</div>
+      </div>
+      <div>
+        <div class="sk-group-title">Data Engineering</div>
+        <div class="sk-item">Pandas</div>
+        <div class="sk-item">Polars</div>
+        <div class="sk-item">NumPy</div>
+        <div class="sk-item">PySpark</div>
+        <div class="sk-item">Dask</div>
+      </div>
+      <div>
+        <div class="sk-group-title">AI, ML & Graph</div>
+        <div class="sk-item">PyTorch</div>
+        <div class="sk-item">Scikit-Learn</div>
+        <div class="sk-item">OpenAI Gym</div>
+        <div class="sk-item">OpenCV</div>
+        <div class="sk-item">LangGraph</div>
+        <div class="sk-item">Graph Neural Networks</div>
+      </div>
+      <div>
+        <div class="sk-group-title">Web, Serving & MLOps</div>
+        <div class="sk-item">FastAPI</div>
+        <div class="sk-item">Django</div>
+        <div class="sk-item">Flask</div>
+        <div class="sk-item">Streamlit</div>
+        <div class="sk-item">Docker</div>
+        <div class="sk-item">Qdrant · Weaviate</div>
+        <div class="sk-item">LangChain</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+<!-- COURSEWORK -->
+<div class="chapter r">
+  <div class="ch-aside">
+    <div class="ch-num">05</div>
+    <div class="ch-label">Academic Coursework</div>
+  </div>
+  <div class="ch-body">
+    <div class="cw-item">Data Structures &amp; Algorithms</div>
+    <div class="cw-item">Java &amp; Hadoop Ecosystem</div>
+    <div class="cw-item">Database Management Systems</div>
+    <div class="cw-item">Machine Learning</div>
+    <div class="cw-item">Deep Learning &amp; NLP</div>
+    <div class="cw-item">Deep Learning for Cyber Security</div>
+    <div class="cw-item">Deep Reinforcement Learning</div>
+    <div class="cw-item">Time Series Analysis</div>
+    <div class="cw-item">Graph DBs &amp; Distributed Computing</div>
+    <div class="cw-item">Probability &amp; Stochastic Processes</div>
+    <div class="cw-item">Multivariate Statistics</div>
+    <div class="cw-item">Linear Algebra</div>
+    <div class="cw-item">Multivariate Calculus</div>
+  </div>
+</div>
 
-        // --- CANVAS PARTICLES ---
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+<!-- ACHIEVEMENTS -->
+<div class="chapter r">
+  <div class="ch-aside">
+    <div class="ch-num">06</div>
+    <div class="ch-label">Achievements</div>
+  </div>
+  <div class="ch-body">
+    <div class="ach-entry">
+      <div class="ach-yr">2025</div>
+      <div>
+        <div class="ach-title">IEEE WCONF Publication</div>
+        <div class="ach-sub">Real Time Trade Settlement for the US Market</div>
+        <div class="ach-desc">Published in the 3rd World Conference on Communication &amp; Computing.</div>
+        <a href="https://doi.org/10.1109/WCONF64849.2025.11233239" target="_blank" class="ach-link">View DOI</a>
+      </div>
+    </div>
+    <div class="ach-entry">
+      <div class="ach-yr">2024</div>
+      <div>
+        <div class="ach-title">Qualified IIT JAM — Mathematics</div>
+        <div class="ach-sub">Conducted by IIT Madras</div>
+        <div class="ach-desc">Demonstrated proficiency in advanced mathematics securing eligibility for master's programs.</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        let particles = [];
-        for (let i = 0; i < 40; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: (Math.random() - 0.5) * 0.3,
-                size: Math.random() * 2,
-                color: Math.random() > 0.5 ? 'rgba(255, 215, 0, 0.4)' : 'rgba(251, 133, 0, 0.3)'
-            });
-        }
+<!-- VOLUNTEERING -->
+<div class="chapter r">
+  <div class="ch-aside">
+    <div class="ch-num">07</div>
+    <div class="ch-label">Volunteering</div>
+  </div>
+  <div class="ch-body">
+    <div class="entry">
+      <div class="e-meta">
+        <span class="e-date">Perceptron 26</span>
+        <span class="e-org">RKMVERI Annual Tech Fest</span>
+      </div>
+      <div class="e-role">Event Lead: CodeCraft</div>
+      <div class="e-body" style="list-style:none;padding-left:0;">
+        Spearheaded the flagship Hackathon "CodeCraft", managing logistics, problem statements, and participant coordination.
+      </div>
+    </div>
+  </div>
+</div>
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0) p.x = canvas.width;
-                if (p.x > canvas.width) p.x = 0;
-                if (p.y < 0) p.y = canvas.height;
-                if (p.y > canvas.height) p.y = 0;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.fill();
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-    </script>
+</main>
+
+<!-- CONTACT -->
+<section id="contact-s">
+  <div class="ct-hed r">
+    Let's<br><span class="green">talk.</span>
+  </div>
+  <div class="ct-links r d1">
+    <a href="mailto:debarshi2933@gmail.com" class="cl">
+      <div class="cl-l">Email</div>
+      <div class="cl-r">debarshi2933<br>@gmail.com</div>
+    </a>
+    <a href="https://github.com/debarshi29" target="_blank" class="cl">
+      <div class="cl-l">GitHub</div>
+      <div class="cl-r">github.com/<br>debarshi29</div>
+    </a>
+    <a href="https://linkedin.com/in/debarshi29" target="_blank" class="cl">
+      <div class="cl-l">LinkedIn</div>
+      <div class="cl-r">linkedin.com/<br>in/debarshi29</div>
+    </a>
+    <a href="resume.pdf" class="cl">
+      <div class="cl-l">Résumé</div>
+      <div class="cl-r">Download<br>PDF</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-l">© 2026 Debarshi Chakraborty</div>
+  <div class="foot-r">System Online.</div>
+</footer>
+
+<script>
+/* PROGRESS */
+window.addEventListener('scroll',()=>{
+  const s=document.documentElement;
+  document.getElementById('prog').style.width=(s.scrollTop/(s.scrollHeight-s.clientHeight)*100)+'%';
+});
+
+/* CURSOR */
+const cur=document.getElementById('cur'),ring=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function loop(){
+  rx+=(mx-rx)*.1;ry+=(my-ry)*.1;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,.proj-entry,.sk-item,.cw-item,.cl,.entry,.chip,.ach-entry').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('h'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('h'));
+});
+
+/* REVEAL */
+const obs=new IntersectionObserver(es=>es.forEach(e=>{
+  if(e.isIntersecting)e.target.classList.add('in');
+}),{threshold:.06});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+</script>
 </body>
 </html>
